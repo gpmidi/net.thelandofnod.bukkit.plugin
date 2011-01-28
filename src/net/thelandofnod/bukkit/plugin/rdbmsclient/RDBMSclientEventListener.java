@@ -21,19 +21,38 @@ public class RDBMSclientEventListener implements CustomEventListener, Listener  
 	@Override
 	public void onCustomEvent(Event customEvent) {
 		if (customEvent instanceof RDBMScoreQueryResultEvent) {
-			// then there is a query event
-			crs = ((RDBMScoreQueryResultEvent) customEvent).getCrs();
-			try {
-				while (crs.next()){
-					// attempt to send the results to the player..
-					plugin.callingPlayer.sendMessage(crs.getString("output"));
-				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			onRDBMScoreQueryResultEvent((RDBMScoreQueryResultEvent)customEvent);
 			((RDBMScoreQueryResultEvent) customEvent).setCancelled(true);
 		}
+	}
+
+	private void onRDBMScoreQueryResultEvent(RDBMScoreQueryResultEvent event) {
+
+		if (event.isExceptionCaught()){
+			// then we caught an exception
+			plugin.callingPlayer.sendMessage(event.getExceptionLog());
+		}
+		else {
+			if (event.getEffectedRowCount() > -1){
+				// then this was either an update, insert, or delete
+				plugin.callingPlayer.sendMessage(event.getEffectedRowCount() + " rows effected.");
+			}
+			else{
+				// else this was a select statement
+				crs = ((RDBMScoreQueryResultEvent) event).getCrs();
+				try {
+						while(crs.next()){
+							// attempt to send the results to the player..
+							plugin.callingPlayer.sendMessage(crs.getString("output"));							
+						}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+
 	}
 
 

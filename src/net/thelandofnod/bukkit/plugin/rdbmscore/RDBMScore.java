@@ -66,27 +66,43 @@ public class RDBMScore extends JavaPlugin {
 		Statement stmt = null;
 		ResultSet rs = null;
     	CachedRowSet rows = null;
+    	RDBMScoreQueryResultEvent rcqre = new RDBMScoreQueryResultEvent();
     	
 		try {
 		    stmt = conn.createStatement();
 		    if (stmt.execute(queryText)) {
+		    	// true means it was a select query
 		        rs = stmt.getResultSet();
+		        
+			    // Now do something with the ResultSet ....
+			    rows = new CachedRowSetImpl();
+				rows.populate(rs);	
+				rcqre.setCrs(rows);
 		    }
-		    // Now do something with the ResultSet ....
-		    rows = new CachedRowSetImpl();
-			rows.populate(rs);
+		    else{
+		    	// false, means it was an update, insert, or delete
+		    	// lets get the number of rows effected
+		    	rcqre.setEffectedRowCount(stmt.getUpdateCount());
+		    }
+
 			
 			// asserting our query results event ..
-			RDBMScoreQueryResultEvent rcqre = new RDBMScoreQueryResultEvent();
-			rcqre.setCrs(rows);
+			//RDBMScoreQueryResultEvent rcqre = new RDBMScoreQueryResultEvent();
+			//rcqre.setCrs(rows);
 			RDBMScore.server.getPluginManager().callEvent(rcqre);
 			
 		}
 		catch (SQLException ex){
 		    // handle any errors
-		    System.out.println("SQLException: " + ex.getMessage());
-		    System.out.println("SQLState: " + ex.getSQLState());
-		    System.out.println("VendorError: " + ex.getErrorCode());
+		    //System.out.println("SQLException: " + ex.getMessage());
+		    //System.out.println("SQLState: " + ex.getSQLState());
+		    //System.out.println("VendorError: " + ex.getErrorCode());
+		    rcqre.setExceptionLog("SQLException: " + ex.getMessage() + 
+		    		              " SQLState: " + ex.getSQLState() +
+		    		              " VendorError: " + ex.getErrorCode()
+		    );
+		    rcqre.setExceptionCaught(true);
+		    
 		}
 		finally {
 		    // it is a good idea to release

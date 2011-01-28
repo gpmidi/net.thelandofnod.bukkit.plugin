@@ -5,7 +5,7 @@ import org.bukkit.event.Cancellable;
 public class RDBMScoreQueryEvent extends org.bukkit.event.Event implements Cancellable {
 	private boolean cancel = false;
 	private String queryText;
-	
+		
 	public RDBMScoreQueryEvent(String query) {
 		super("RDBMScoreQueryEvent");
 		queryText = query;
@@ -21,8 +21,6 @@ public class RDBMScoreQueryEvent extends org.bukkit.event.Event implements Cance
 
 	public void setCancelled(boolean cancel) {
 		this.cancel = cancel;
-	} 
-
-	
+	}
 	
 }
