@@ -5,10 +5,20 @@ import org.bukkit.event.Cancellable;
 public class RDBMScoreDBConnectEvent extends org.bukkit.event.Event implements Cancellable {
 	private boolean cancel = false;
 	private String userName, password, dbms, serverName, portNumber, database, driver;
+	String ownerPlugin;
 	
-	public RDBMScoreDBConnectEvent(String userName, String password, String dbms, String serverName, String portNumber, String database, String driver) {
+	public String getOwnerPlugin() {
+		return ownerPlugin;
+	}
+
+	private void setOwnerPlugin(String ownerPlugin) {
+		this.ownerPlugin = ownerPlugin;
+	}
+
+	public RDBMScoreDBConnectEvent(String ownerPlugin, String userName, String password, String dbms, String serverName, String portNumber, String database, String driver) {
 		super("RDBMScoreDBConnectEvent");
 
+		setOwnerPlugin(ownerPlugin);
         setUserName(userName);
         setPassword(password);
         setDatabase(database);

@@ -19,7 +19,15 @@ public class RDBMScoreEventListener implements CustomEventListener, Listener {
 		else if (event instanceof RDBMScoreDBConnectEvent){
 			onRDBMScoreDBConnectEvent((RDBMScoreDBConnectEvent)event);
 		}
-		
+		else if (event instanceof RDBMScoreDBDisconnectEvent){
+			onRDBMScoreDBDisconnectEvent((RDBMScoreDBDisconnectEvent)event);
+		}
+	}
+
+	private void onRDBMScoreDBDisconnectEvent(RDBMScoreDBDisconnectEvent rcdde) {
+		// TODO Auto-generated method stub
+		plugin.assertDBDisconnectEvent(rcdde);
+		rcdde.setCancelled(true);
 	}
 
 	private void onRDBMScoreDBConnectEvent(RDBMScoreDBConnectEvent rcdce) {
@@ -28,7 +36,7 @@ public class RDBMScoreEventListener implements CustomEventListener, Listener {
 	}
 
 	private void onRDBMScoreQueryEvent(RDBMScoreQueryEvent rcqe) {
-		plugin.assertQueryResultEvent(rcqe.getQuery());
+		plugin.assertQueryResultEvent(rcqe);
 		rcqe.setCancelled(true);
 	}
 

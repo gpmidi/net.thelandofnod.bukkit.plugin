@@ -21,13 +21,19 @@ public class RDBMSclientEventListener implements CustomEventListener, Listener  
 	@Override
 	public void onCustomEvent(Event customEvent) {
 		if (customEvent instanceof RDBMScoreQueryResultEvent) {
-			onRDBMScoreQueryResultEvent((RDBMScoreQueryResultEvent)customEvent);
-			((RDBMScoreQueryResultEvent) customEvent).setCancelled(true);
+			// see if the event is owned by us ..
+			if (((RDBMScoreQueryResultEvent)customEvent).getOwnerPlugin().equals(plugin.pdfFile.getName())){
+				onRDBMScoreQueryResultEvent((RDBMScoreQueryResultEvent)customEvent);
+				((RDBMScoreQueryResultEvent) customEvent).setCancelled(true);
+			}
+			else{
+				// else the event doesn't belong to us..
+				System.out.println("RDBMSclient ignoring caught RDBMScoreQueryResultsEvent, doesn't belong to it.");
+			}
 		}
 	}
 
 	private void onRDBMScoreQueryResultEvent(RDBMScoreQueryResultEvent event) {
-
 		if (event.isExceptionCaught()){
 			// then we caught an exception
 			plugin.callingPlayer.sendMessage(event.getExceptionLog());
@@ -43,7 +49,7 @@ public class RDBMSclientEventListener implements CustomEventListener, Listener  
 				try {
 						while(crs.next()){
 							// attempt to send the results to the player..
-							plugin.callingPlayer.sendMessage(crs.getString("output"));							
+							plugin.callingPlayer.sendMessage(crs.getString("eventName"));							
 						}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block

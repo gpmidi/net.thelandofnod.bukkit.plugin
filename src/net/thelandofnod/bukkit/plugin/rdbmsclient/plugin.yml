@@ -1,3 +1,3 @@
 name: rdbmsclient
 main: net.thelandofnod.bukkit.plugin.rdbmsclient.RDBMSclient
-version: 0.0.2
+version: 0.0.3

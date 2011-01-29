@@ -18,6 +18,7 @@ public class RDBMSclient extends JavaPlugin {
 	private final RDBMSclientPlayerListener playerListener = new RDBMSclientPlayerListener(this);
 	public static Server server;
 	public Player callingPlayer;
+	PluginDescriptionFile pdfFile;
 	
 	public RDBMSclient(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
         super(pluginLoader, instance, desc, folder, plugin, cLoader);
@@ -32,11 +33,18 @@ public class RDBMSclient extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		// TODO
+		// add rdbmscore plugin dependencies...
+		//Plugin p = getServer().getPluginManager().getPlugin(pluginName); ?
+				
+				
 		 // Register our events
         PluginManager pm = getServer().getPluginManager();
         
         pm.registerEvent(Event.Type.CUSTOM_EVENT, this.eventListener, Event.Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_COMMAND, this.playerListener, Event.Priority.Normal, this);
+        
+        pdfFile = this.getDescription();
         
         // assert out DB Connection Event..
         this.assertDBConnectEvent("minecraftServer",
@@ -48,18 +56,19 @@ public class RDBMSclient extends JavaPlugin {
         						  "com.mysql.jdbc.Driver");
         
 
-        PluginDescriptionFile pdfFile = this.getDescription();
+        
         System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
 		
 	}
 
-	public void assertQueryEvent(String query) {
-		RDBMScoreQueryEvent rcqe = new RDBMScoreQueryEvent(query);
+	public void assertQueryEvent(String query) {		
+		RDBMScoreQueryEvent rcqe = new RDBMScoreQueryEvent(pdfFile.getName(), query);
 		RDBMSclient.server.getPluginManager().callEvent(rcqe);
 	}
 	
 	public void assertDBConnectEvent(String userName, String password, String dbms, String serverName, String portNumber, String database, String driver){
-		RDBMScoreDBConnectEvent rcdce = new RDBMScoreDBConnectEvent(userName, password, dbms, serverName, portNumber, database, driver);
+		//System.out.println("assertDBConnectEvent(" + pdfFile.getName() + ")");
+		RDBMScoreDBConnectEvent rcdce = new RDBMScoreDBConnectEvent(pdfFile.getName(), userName, password, dbms, serverName, portNumber, database, driver);
 		RDBMSclient.server.getPluginManager().callEvent(rcdce);
 	}
 }

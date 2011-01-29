@@ -11,11 +11,22 @@ public class RDBMScoreQueryResultEvent extends org.bukkit.event.Event implements
 	private int effectedRowCount = -1;
 	private String exceptionLog;
 	private boolean exceptionCaught = false;
+	private String ownerPlugin;
 	
-	public RDBMScoreQueryResultEvent() {
+	public RDBMScoreQueryResultEvent(String ownerPlugin) {
 		super("RDBMScoreQueryResultEvent");
+		this.setOwnerPlugin(ownerPlugin);
 	}
 
+	private void setOwnerPlugin(String ownerPlugin) {
+		this.ownerPlugin = ownerPlugin;
+		
+	}
+
+	public String getOwnerPlugin() {
+		return this.ownerPlugin;
+	}
+	
 	public void setCrs(CachedRowSet crs) {
 		this.crs = crs;
 	}

@@ -22,18 +22,23 @@ import com.sun.rowset.CachedRowSetImpl;
 import net.thelandofnod.bukkit.plugin.rdbmscore.RDBMScoreEventListener;
 import net.thelandofnod.bukkit.plugin.rdbmscore.RDBMScoreQueryResultEvent;
 
+
 /**
  * Entry point for plugin
  */
 @SuppressWarnings("restriction")
 public class RDBMScore extends JavaPlugin {
 	private final RDBMScoreEventListener queryListener = new RDBMScoreEventListener(this);
-    Connection conn;
+	
+	// an array of conn are needed, but of conn, and calling pluginname - a connection registry
+    //Connection conn;
     public static Server server;
+    private RDBMScoreClientRegistry clientRegistry = new RDBMScoreClientRegistry();
     
     public RDBMScore(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
         super(pluginLoader, instance, desc, folder, plugin, cLoader);
-        conn=null;
+        //conn=null;
+        
         
         // NOTE: Event registration should be done in onEnable not here as all events are unregistered when a plugin is disabled
 		server = instance;         
@@ -55,37 +60,42 @@ public class RDBMScore extends JavaPlugin {
     
     public void onDisable() {
         // NOTE: All registered events are automatically unregistered when a plugin is disabled
-
-        // EXAMPLE: Custom code, here we just output some info so we can check all is well
+    	
     	PluginDescriptionFile pdfFile = this.getDescription();
     	System.out.println( pdfFile.getName() + " version " + pdfFile.getVersion() + " is disabled!" );
     }
     
     
-    public void assertQueryResultEvent(String queryText){
+    public void assertQueryResultEvent(RDBMScoreQueryEvent rcqe){
 		Statement stmt = null;
 		ResultSet rs = null;
     	CachedRowSet rows = null;
-    	RDBMScoreQueryResultEvent rcqre = new RDBMScoreQueryResultEvent();
+    	Connection conn = null;
+    	String ownerPlugin = rcqe.getOwnerPlugin();
+    	String queryString = rcqe.getQuery();
+    	
+    	RDBMScoreQueryResultEvent rcqre = new RDBMScoreQueryResultEvent(ownerPlugin);
     	
 		try {
-		    stmt = conn.createStatement();
-		    if (stmt.execute(queryText)) {
-		    	// true means it was a select query
-		        rs = stmt.getResultSet();
-		        
-			    // Now do something with the ResultSet ....
-			    rows = new CachedRowSetImpl();
-				rows.populate(rs);	
-				rcqre.setCrs(rows);
-		    }
-		    else{
-		    	// false, means it was an update, insert, or delete
-		    	// lets get the number of rows effected
-		    	rcqre.setEffectedRowCount(stmt.getUpdateCount());
-		    }
-
-			
+			if (this.clientRegistry.isPluginRegistered(ownerPlugin)){
+				conn = this.clientRegistry.getRegisteredConnection(ownerPlugin);
+			    stmt = conn.createStatement();
+			    if (stmt.execute(queryString)){
+			    	// true means it was a select query
+			        rs = stmt.getResultSet();
+			        
+				    // Now do something with the ResultSet ....
+				    rows = new CachedRowSetImpl();
+					rows.populate(rs);	
+					rcqre.setCrs(rows);			    	
+			    }
+			    else{
+			    	// false, means it was an update, insert, or delete
+			    	// lets get the number of rows effected
+			    	rcqre.setEffectedRowCount(stmt.getUpdateCount());
+			    }			    
+			}
+					
 			// asserting our query results event ..
 			//RDBMScoreQueryResultEvent rcqre = new RDBMScoreQueryResultEvent();
 			//rcqre.setCrs(rows);
@@ -94,9 +104,9 @@ public class RDBMScore extends JavaPlugin {
 		}
 		catch (SQLException ex){
 		    // handle any errors
-		    //System.out.println("SQLException: " + ex.getMessage());
-		    //System.out.println("SQLState: " + ex.getSQLState());
-		    //System.out.println("VendorError: " + ex.getErrorCode());
+		    System.out.println("SQLException: " + ex.getMessage());
+		    System.out.println("SQLState: " + ex.getSQLState());
+		    System.out.println("VendorError: " + ex.getErrorCode());
 		    rcqre.setExceptionLog("SQLException: " + ex.getMessage() + 
 		    		              " SQLState: " + ex.getSQLState() +
 		    		              " VendorError: " + ex.getErrorCode()
@@ -131,26 +141,55 @@ public class RDBMScore extends JavaPlugin {
     
     
     public void assertDBConnectEvent(RDBMScoreDBConnectEvent event){
+    	Connection conn = null;
+    	String ownerPlugin = "";
+    	//conn = this.connectionRegistry.getConnection();
+    	// first see if we already have a connection
+    	// create one if we don't and register it
     	
-        // initiate database connection
-    	if (conn != null) {
-    		try {
-				conn.close();
-				System.out.println("Disconnected from database");
-			} catch (SQLException e) {
-				e.printStackTrace();
-				conn = null;
-			}
-    		conn = null;
-    	}
-    	else {
+    	ownerPlugin = event.getOwnerPlugin();
+    	System.out.println("Event Owner: " + ownerPlugin);
+    	if (!this.clientRegistry.isPluginRegistered(ownerPlugin)){
+    		// then create a new connection and register it
     		try {
 				conn = getConnection(event);
-				System.out.println("Conneted to database");
+				this.clientRegistry.registerPlugin(conn, ownerPlugin);
+				System.out.println("Conneted to database, and registed.");
+				
 			} catch (SQLException e) {
 				e.printStackTrace();
 				conn = null;
 			}
+    	}        	
+    	else {
+    		System.out.println("plugin " + ownerPlugin + " already has a registered database connection.");
+    	}    		
+    }
+    
+
+    public void assertDBDisconnectEvent(RDBMScoreDBDisconnectEvent event){
+    	Connection conn = null;
+    	String ownerPlugin;
+    	//conn = this.connectionRegistry.getConnection();
+    	// first see if we already have a connection
+    	// create one if we don't and register it
+    	
+    	ownerPlugin = event.getOwnerPlugin();
+    	if (this.clientRegistry.isPluginRegistered(ownerPlugin)){
+    		conn = this.clientRegistry.getRegisteredConnection(ownerPlugin);
+    		this.clientRegistry.unregisterPlugin(ownerPlugin);
+    		if (conn != null){
+    			try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    		
+    	}        	
+    	else {
+    		System.out.println("plugin " + ownerPlugin + " already has a registered database connection.");
     	}
     }
     
