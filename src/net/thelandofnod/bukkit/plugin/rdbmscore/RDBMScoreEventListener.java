@@ -2,26 +2,23 @@ package net.thelandofnod.bukkit.plugin.rdbmscore;
 
 import org.bukkit.event.CustomEventListener;
 import org.bukkit.event.Event;
-//import org.bukkit.event.Listener;
-
 
 // implements Listener 
-public class RDBMScoreEventListener extends CustomEventListener{
+public class RDBMScoreEventListener extends CustomEventListener {
 	private final RDBMScore plugin;
-	 
-	public RDBMScoreEventListener(RDBMScore instance){
+
+	public RDBMScoreEventListener(RDBMScore instance) {
 		plugin = instance;
 	}
-	
+
+	@Override
 	public void onCustomEvent(Event event) {
 		if (event instanceof RDBMScoreQueryEvent) {
-			onRDBMScoreQueryEvent((RDBMScoreQueryEvent)event);
-		}
-		else if (event instanceof RDBMScoreDBConnectEvent){
-			onRDBMScoreDBConnectEvent((RDBMScoreDBConnectEvent)event);
-		}
-		else if (event instanceof RDBMScoreDBDisconnectEvent){
-			onRDBMScoreDBDisconnectEvent((RDBMScoreDBDisconnectEvent)event);
+			onRDBMScoreQueryEvent((RDBMScoreQueryEvent) event);
+		} else if (event instanceof RDBMScoreDBConnectEvent) {
+			onRDBMScoreDBConnectEvent((RDBMScoreDBConnectEvent) event);
+		} else if (event instanceof RDBMScoreDBDisconnectEvent) {
+			onRDBMScoreDBDisconnectEvent((RDBMScoreDBDisconnectEvent) event);
 		}
 	}
 

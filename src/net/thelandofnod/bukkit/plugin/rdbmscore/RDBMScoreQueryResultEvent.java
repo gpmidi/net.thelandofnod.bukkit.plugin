@@ -4,15 +4,15 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.bukkit.event.Cancellable;
 
-
-public class RDBMScoreQueryResultEvent extends org.bukkit.event.Event implements Cancellable {
+public class RDBMScoreQueryResultEvent extends org.bukkit.event.Event implements
+		Cancellable {
 	private boolean cancel = false;
 	private CachedRowSet crs;
 	private int effectedRowCount = -1;
 	private String exceptionLog;
 	private boolean exceptionCaught = false;
 	private String ownerPlugin;
-	
+
 	public RDBMScoreQueryResultEvent(String ownerPlugin) {
 		super("RDBMScoreQueryResultEvent");
 		this.setOwnerPlugin(ownerPlugin);
@@ -20,13 +20,13 @@ public class RDBMScoreQueryResultEvent extends org.bukkit.event.Event implements
 
 	private void setOwnerPlugin(String ownerPlugin) {
 		this.ownerPlugin = ownerPlugin;
-		
+
 	}
 
 	public String getOwnerPlugin() {
 		return this.ownerPlugin;
 	}
-	
+
 	public void setCrs(CachedRowSet crs) {
 		this.crs = crs;
 	}
@@ -35,10 +35,12 @@ public class RDBMScoreQueryResultEvent extends org.bukkit.event.Event implements
 		return crs;
 	}
 
+	@Override
 	public boolean isCancelled() {
 		return cancel;
 	}
 
+	@Override
 	public void setCancelled(boolean cancel) {
 		this.cancel = cancel;
 	}
@@ -65,8 +67,6 @@ public class RDBMScoreQueryResultEvent extends org.bukkit.event.Event implements
 
 	public boolean isExceptionCaught() {
 		return exceptionCaught;
-	} 
+	}
 
-	
-	
 }

@@ -2,10 +2,11 @@ package net.thelandofnod.bukkit.plugin.rdbmscore;
 
 import org.bukkit.event.Cancellable;
 
-public class RDBMScoreDBDisconnectEvent extends org.bukkit.event.Event implements Cancellable {
+public class RDBMScoreDBDisconnectEvent extends org.bukkit.event.Event
+		implements Cancellable {
 	private boolean cancel = false;
 	String ownerPlugin;
-	
+
 	public String getOwnerPlugin() {
 		return ownerPlugin;
 	}
@@ -14,7 +15,9 @@ public class RDBMScoreDBDisconnectEvent extends org.bukkit.event.Event implement
 		this.ownerPlugin = ownerPlugin;
 	}
 
-	public RDBMScoreDBDisconnectEvent(String ownerPlugin, String userName, String password, String dbms, String serverName, String portNumber, String database, String driver) {
+	public RDBMScoreDBDisconnectEvent(String ownerPlugin, String userName,
+			String password, String dbms, String serverName, String portNumber,
+			String database, String driver) {
 		super("RDBMScoreDBDisonnectEvent");
 		setOwnerPlugin(ownerPlugin);
 	}
@@ -29,6 +32,5 @@ public class RDBMScoreDBDisconnectEvent extends org.bukkit.event.Event implement
 	public void setCancelled(boolean cancel) {
 		this.cancel = cancel;
 	}
-
 
 }
