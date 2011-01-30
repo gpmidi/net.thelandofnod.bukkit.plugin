@@ -8,9 +8,10 @@ import net.thelandofnod.bukkit.plugin.rdbmscore.RDBMScoreQueryResultEvent;
 
 import org.bukkit.event.CustomEventListener;
 import org.bukkit.event.Event;
-import org.bukkit.event.Listener;
+//import org.bukkit.event.Listener;
 
-public class RDBMSclientEventListener implements CustomEventListener, Listener   {
+// implements Listener   
+public class RDBMSclientEventListener extends CustomEventListener{
 	CachedRowSet crs = null;
 	private final RDBMSclient plugin;
 	

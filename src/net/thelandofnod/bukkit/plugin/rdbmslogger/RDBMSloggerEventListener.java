@@ -9,9 +9,11 @@ import net.thelandofnod.bukkit.plugin.rdbmslogger.RDBMSlogger.applicationState;
 
 import org.bukkit.event.CustomEventListener;
 import org.bukkit.event.Event;
-import org.bukkit.event.Listener;
+//import org.bukkit.event.Listener;
+//import org.bukkit.plugin.PluginManager;
 
-public class RDBMSloggerEventListener implements CustomEventListener, Listener   {
+//  implements Listener   
+public class RDBMSloggerEventListener extends CustomEventListener{
 	CachedRowSet crs = null;
 	private final RDBMSlogger plugin;
 	
@@ -30,8 +32,6 @@ public class RDBMSloggerEventListener implements CustomEventListener, Listener  
 				// this is the correct event, but we are not the owner so ignore
 				System.out.println("RDBMSlogger caught RDBMScoreQueryResultEvent, but ignored it, it's not the owner.");
 			}				
-			//onRDBMScoreQueryResultEvent((RDBMScoreQueryResultEvent)customEvent);
-			//((RDBMScoreQueryResultEvent) customEvent).setCancelled(true);
 		} else if (customEvent instanceof RDBMSloggerInitEvent) {
 			onRDBMSloggerInitEvent((RDBMSloggerInitEvent)customEvent);
 			((RDBMSloggerInitEvent) customEvent).setCancelled(true);
@@ -68,10 +68,16 @@ public class RDBMSloggerEventListener implements CustomEventListener, Listener  
 					// else this was a select statement
 					crs = ((RDBMScoreQueryResultEvent) event).getCrs();
 					try {
+							
 							while(crs.next()){
 								// attempt to send the results to the player..
 								//plugin.callingPlayer.sendMessage("(" + crs.getTimestamp("timeStamp") + ") " + crs.getString("output"));
-								System.out.println(crs.getString("eventName"));
+								//System.out.println(crs.getString("eventName"));
+								
+								//plugin.getServer().getPluginManager()
+								//.registerEvent(crs.getString("eventName"), plugin.eventListener, Event.Priority.Monitor, plugin);
+								
+								//pm.registerEvent(crs.getString("eventName"), plugin.eventListener, Event.Priority.Monitor, plugin);
 							}
 							plugin.setCurrentState(applicationState.NORMAL);
 							

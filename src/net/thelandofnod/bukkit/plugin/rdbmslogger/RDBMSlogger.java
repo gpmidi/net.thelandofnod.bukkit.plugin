@@ -15,7 +15,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class RDBMSlogger extends JavaPlugin {
 	private final RDBMSloggerEventListener eventListener = new RDBMSloggerEventListener(this);
-	private final RDBMSloggerPlayerListener playerListener = new RDBMSloggerPlayerListener(this);
 	public static Server server;
 	public Player callingPlayer;
 	PluginDescriptionFile pdfFile;
@@ -50,7 +49,6 @@ public class RDBMSlogger extends JavaPlugin {
         
         // handles ad-hoc queries
         pm.registerEvent(Event.Type.CUSTOM_EVENT, this.eventListener, Event.Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_COMMAND, this.playerListener, Event.Priority.Normal, this);
         
         // for logging of events
         //pm.registerEvent(Event.Type., arg1, arg2, arg3)
@@ -78,7 +76,6 @@ public class RDBMSlogger extends JavaPlugin {
 	private void assertRDBMSloggerInitEvent() {
 		RDBMSloggerInitEvent rlie = new RDBMSloggerInitEvent("RDBMSloggerInitEvent");
 		RDBMSlogger.server.getPluginManager().callEvent(rlie);
-		
 	}
 
 	public void assertQueryEvent(String query) {

@@ -2,10 +2,11 @@ package net.thelandofnod.bukkit.plugin.rdbmscore;
 
 import org.bukkit.event.CustomEventListener;
 import org.bukkit.event.Event;
-import org.bukkit.event.Listener;
+//import org.bukkit.event.Listener;
 
 
-public class RDBMScoreEventListener implements CustomEventListener, Listener {
+// implements Listener 
+public class RDBMScoreEventListener extends CustomEventListener{
 	private final RDBMScore plugin;
 	 
 	public RDBMScoreEventListener(RDBMScore instance){

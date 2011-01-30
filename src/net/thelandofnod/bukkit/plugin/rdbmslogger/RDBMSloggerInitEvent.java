@@ -7,6 +7,8 @@ public class RDBMSloggerInitEvent extends org.bukkit.event.Event implements Canc
 	
 	protected RDBMSloggerInitEvent(String name) {
 		super(name);
+		
+		// now we need to load our 
 	}
 
 	@Override
