@@ -20,16 +20,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.sun.rowset.CachedRowSetImpl;
 
 /**
- * Entry point for plugin
+ * Entry point for the RDBMS core plugin
+ */
+/**
+ * @author josh
+ *
  */
 @SuppressWarnings("restriction")
 public class RDBMScore extends JavaPlugin {
 	private final RDBMScoreEventListener queryListener = new RDBMScoreEventListener(
 			this);
 
-	// an array of conn are needed, but of conn, and calling pluginname - a
-	// connection registry
-	// Connection conn;
 	public static Server server;
 	private RDBMScoreClientRegistry clientRegistry = new RDBMScoreClientRegistry();
 
@@ -37,7 +38,6 @@ public class RDBMScore extends JavaPlugin {
 			PluginDescriptionFile desc, File folder, File plugin,
 			ClassLoader cLoader) {
 		super(pluginLoader, instance, desc, folder, plugin, cLoader);
-		// conn=null;
 
 		// NOTE: Event registration should be done in onEnable not here as all
 		// events are unregistered when a plugin is disabled
@@ -46,8 +46,6 @@ public class RDBMScore extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-
-		// Register our events
 		PluginManager pm = getServer().getPluginManager();
 
 		// Create listeners
@@ -69,6 +67,12 @@ public class RDBMScore extends JavaPlugin {
 				+ pdfFile.getVersion() + " is disabled!");
 	}
 
+	
+	/**
+	 * This is where we handle the query requests from plugins
+	 * 
+	 * @param rcqe
+	 */
 	public void assertQueryResultEvent(RDBMScoreQueryEvent rcqe) {
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -77,6 +81,7 @@ public class RDBMScore extends JavaPlugin {
 		String ownerPlugin = rcqe.getOwnerPlugin();
 		String queryString = rcqe.getQuery();
 
+		// create our response object and give the sender ownership
 		RDBMScoreQueryResultEvent rcqre = new RDBMScoreQueryResultEvent(
 				ownerPlugin);
 
@@ -100,9 +105,6 @@ public class RDBMScore extends JavaPlugin {
 			}
 
 			// asserting our query results event ..
-			// RDBMScoreQueryResultEvent rcqre = new
-			// RDBMScoreQueryResultEvent();
-			// rcqre.setCrs(rows);
 			RDBMScore.server.getPluginManager().callEvent(rcqre);
 
 		} catch (SQLException ex) {
@@ -139,10 +141,14 @@ public class RDBMScore extends JavaPlugin {
 		}
 	}
 
+	
+	/**
+	 * @param event
+	 */
 	public void assertDBConnectEvent(RDBMScoreDBConnectEvent event) {
 		Connection conn = null;
 		String ownerPlugin = "";
-		// conn = this.connectionRegistry.getConnection();
+
 		// first see if we already have a connection
 		// create one if we don't and register it
 
@@ -165,10 +171,11 @@ public class RDBMScore extends JavaPlugin {
 		}
 	}
 
+	
 	public void assertDBDisconnectEvent(RDBMScoreDBDisconnectEvent event) {
 		Connection conn = null;
 		String ownerPlugin;
-		// conn = this.connectionRegistry.getConnection();
+
 		// first see if we already have a connection
 		// create one if we don't and register it
 

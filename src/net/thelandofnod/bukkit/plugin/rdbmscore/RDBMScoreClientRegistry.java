@@ -16,7 +16,6 @@ public class RDBMScoreClientRegistry {
 	}
 
 	public void registerPlugin(Connection conn, String ownerPlugin) {
-		// TODO Auto-generated method stub
 		if (!isPluginRegistered(ownerPlugin)) {
 			this.connectionRegistry.put(ownerPlugin, conn);
 		}
@@ -24,7 +23,6 @@ public class RDBMScoreClientRegistry {
 	}
 
 	public void unregisterPlugin(String ownerPlugin) {
-		// TODO Auto-generated method stub
 		if (isPluginRegistered(ownerPlugin)) {
 			this.connectionRegistry.remove(ownerPlugin);
 		}
