@@ -24,7 +24,7 @@ import com.sun.rowset.CachedRowSetImpl;
  */
 /**
  * @author josh
- *
+ * 
  */
 @SuppressWarnings("restriction")
 public class RDBMScore extends JavaPlugin {
@@ -67,7 +67,6 @@ public class RDBMScore extends JavaPlugin {
 				+ pdfFile.getVersion() + " is disabled!");
 	}
 
-	
 	/**
 	 * This is where we handle the query requests from plugins
 	 * 
@@ -80,6 +79,8 @@ public class RDBMScore extends JavaPlugin {
 		Connection conn = null;
 		String ownerPlugin = rcqe.getOwnerPlugin();
 		String queryString = rcqe.getQuery();
+		boolean stale = false;
+		// String queryString = Matcher.quoteReplacement(rcqe.getQuery());
 
 		// create our response object and give the sender ownership
 		RDBMScoreQueryResultEvent rcqre = new RDBMScoreQueryResultEvent(
@@ -88,24 +89,65 @@ public class RDBMScore extends JavaPlugin {
 		try {
 			if (this.clientRegistry.isPluginRegistered(ownerPlugin)) {
 				conn = this.clientRegistry.getRegisteredConnection(ownerPlugin);
-				stmt = conn.createStatement();
-				if (stmt.execute(queryString)) {
-					// true means it was a select query
-					rs = stmt.getResultSet();
 
-					// Now do something with the ResultSet ....
-					rows = new CachedRowSetImpl();
-					rows.populate(rs);
-					rcqre.setCrs(rows);
-				} else {
-					// false, means it was an update, insert, or delete
-					// lets get the number of rows effected
-					rcqre.setEffectedRowCount(stmt.getUpdateCount());
+				try {
+					if (conn.isValid(2000)) {
+						// then we are cleared to proceed
+						// Throws:
+						// SQLException - if a database access error occurs or
+						// this method is called on a closed connection
+						stmt = conn.createStatement();
+					} else {
+						// otherwise we have an issue with the connection to the
+						// db..
+						System.out
+								.println("Plugin "
+										+ ownerPlugin
+										+ " no longer has a valid database connection..");
+						// System.out.println("SQL to execute: " + queryString);
+						stale = true;
+
+						// attempt to reconnect
+						System.out.println("Attempting reconnect..");
+						this.reConnect(ownerPlugin);
+						conn = this.clientRegistry
+								.getRegisteredConnection(ownerPlugin);
+						if (conn.isValid(2000)) {
+							// then we are cleared to proceed
+							// Throws:
+							// SQLException - if a database access error occurs
+							// or this method is called on a closed connection
+
+							stmt = conn.createStatement();
+							stale = false;
+						}
+
+					}
+				} catch (SQLException e1) {
+					System.out
+							.println("Connection was most likely stale, exception was thrown on createStatement, or isValid..");
+					System.out.println("Plugin: " + ownerPlugin);
+					System.out.println("SQL to execute: " + queryString);
+					stale = true;
+					e1.printStackTrace();
+				}
+
+				if (!stale) {
+					if (stmt.execute(queryString)) {
+						// true means it was a select query
+						rs = stmt.getResultSet();
+
+						// Now do something with the ResultSet ....
+						rows = new CachedRowSetImpl();
+						rows.populate(rs);
+						rcqre.setCrs(rows);
+					} else {
+						// false, means it was an update, insert, or delete
+						// lets get the number of rows effected
+						rcqre.setEffectedRowCount(stmt.getUpdateCount());
+					}
 				}
 			}
-
-			// asserting our query results event ..
-			RDBMScore.server.getPluginManager().callEvent(rcqre);
 
 		} catch (SQLException ex) {
 			// handle any errors
@@ -138,10 +180,96 @@ public class RDBMScore extends JavaPlugin {
 				}
 				stmt = null;
 			}
+
+			// asserting our query results event ..
+			// even if we caught exceptions along the way..
+			RDBMScore.server.getPluginManager().callEvent(rcqre);
 		}
 	}
 
-	
+	private void reConnect(String ownerPlugin) {
+		// attempt to re-establish our database connection
+
+		Connection conn = null;
+
+		String userName = this.clientRegistry
+				.getRegisteredConnectionUserName(ownerPlugin);
+		String password = this.clientRegistry
+				.getRegisteredConnectionPassword(ownerPlugin);
+		String dbms = this.clientRegistry
+				.getRegisteredConnectionDBMS(ownerPlugin);
+		String serverName = this.clientRegistry
+				.getRegisteredConnectionServerName(ownerPlugin);
+		String portNumber = this.clientRegistry
+				.getRegisteredConnectionPortNumber(ownerPlugin);
+		String database = this.clientRegistry
+				.getRegisteredConnectionDatabase(ownerPlugin);
+		String driver = this.clientRegistry
+				.getRegisteredConnectionDriver(ownerPlugin);
+
+		if (this.clientRegistry.isPluginRegistered(ownerPlugin)) {
+			conn = this.clientRegistry.getRegisteredConnection(ownerPlugin);
+			this.clientRegistry.unregisterPlugin(ownerPlugin);
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			conn = null;
+
+		}
+
+		if (!this.clientRegistry.isPluginRegistered(ownerPlugin)) {
+			// then create a new connection and register it
+			try {
+				// conn = getConnection(event);
+				conn = GetNewConnect(userName, password, dbms, serverName,
+						portNumber, database, driver);
+				this.clientRegistry.registerPlugin(conn, ownerPlugin, userName,
+						password, dbms, serverName, portNumber, database,
+						driver);
+
+				System.out
+						.println("Connected to database, and connection registered.");
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				conn = null;
+			}
+		} else {
+			System.out.println("plugin " + ownerPlugin
+					+ " already has a registered database connection.");
+		}
+
+		// RDBMScoreDBDisconnectEvent rcdde = new RDBMScoreDBDisconnectEvent(
+		// ownerPlugin,
+		// userName,
+		// password,
+		// dbms,
+		// serverName,
+		// portNumber,
+		// database,
+		// driver);
+		// this.assertDBDisconnectEvent(rcdde);
+		// rcdde = null;
+		//
+		// RDBMScoreDBConnectEvent rdce = new RDBMScoreDBConnectEvent(
+		// ownerPlugin,
+		// userName,
+		// password,
+		// dbms,
+		// serverName,
+		// portNumber,
+		// database,
+		// driver);
+		// this.assertDBConnectEvent(rdce);
+		// rdce = null;
+
+	}
+
 	/**
 	 * @param event
 	 */
@@ -153,13 +281,20 @@ public class RDBMScore extends JavaPlugin {
 		// create one if we don't and register it
 
 		ownerPlugin = event.getOwnerPlugin();
-		System.out.println("Event Owner: " + ownerPlugin);
+		// System.out.println("Event Owner: " + ownerPlugin);
 		if (!this.clientRegistry.isPluginRegistered(ownerPlugin)) {
 			// then create a new connection and register it
 			try {
+
 				conn = getConnection(event);
-				this.clientRegistry.registerPlugin(conn, ownerPlugin);
-				System.out.println("Conneted to database, and registed.");
+				this.clientRegistry.registerPlugin(conn, ownerPlugin,
+						event.getUserName(), event.getPassword(),
+						event.getDbms(), event.getServerName(),
+						event.getPortNumber(), event.getDatabase(),
+						event.getDriver());
+
+				System.out
+						.println("Connected to database, and connection registered.");
 
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -171,7 +306,6 @@ public class RDBMScore extends JavaPlugin {
 		}
 	}
 
-	
 	public void assertDBDisconnectEvent(RDBMScoreDBDisconnectEvent event) {
 		Connection conn = null;
 		String ownerPlugin;
@@ -191,10 +325,8 @@ public class RDBMScore extends JavaPlugin {
 					e.printStackTrace();
 				}
 			}
+			conn = null;
 
-		} else {
-			System.out.println("plugin " + ownerPlugin
-					+ " already has a registered database connection.");
 		}
 	}
 
@@ -216,10 +348,35 @@ public class RDBMScore extends JavaPlugin {
 		Properties connectionProps = new Properties();
 		connectionProps.put("user", event.getUserName());
 		connectionProps.put("password", event.getPassword());
+
 		conn = DriverManager.getConnection("jdbc:" + event.getDbms() + "://"
 				+ event.getServerName() + ":" + event.getPortNumber() + "/"
 				+ event.getDatabase(), connectionProps);
+		return conn;
+	}
 
+	private Connection GetNewConnect(String userName, String password,
+			String dbms, String serverName, String portNumber, String database,
+			String driver) throws SQLException {
+
+		// Get the driver ..
+		try {
+			Class.forName(driver).newInstance();
+		} catch (InstantiationException e1) {
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		}
+
+		Connection conn = null;
+		Properties connectionProps = new Properties();
+		connectionProps.put("user", userName);
+		connectionProps.put("password", password);
+
+		conn = DriverManager.getConnection("jdbc:" + dbms + "://" + serverName
+				+ ":" + portNumber + "/" + database, connectionProps);
 		return conn;
 	}
 

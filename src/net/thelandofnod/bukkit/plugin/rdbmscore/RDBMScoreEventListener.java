@@ -23,7 +23,6 @@ public class RDBMScoreEventListener extends CustomEventListener {
 	}
 
 	private void onRDBMScoreDBDisconnectEvent(RDBMScoreDBDisconnectEvent rcdde) {
-		// TODO Auto-generated method stub
 		plugin.assertDBDisconnectEvent(rcdde);
 		rcdde.setCancelled(true);
 	}

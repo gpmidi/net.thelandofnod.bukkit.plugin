@@ -24,7 +24,6 @@ public class RDBMScoreDBDisconnectEvent extends org.bukkit.event.Event
 
 	@Override
 	public boolean isCancelled() {
-		// TODO Auto-generated method stub
 		return cancel;
 	}
 
