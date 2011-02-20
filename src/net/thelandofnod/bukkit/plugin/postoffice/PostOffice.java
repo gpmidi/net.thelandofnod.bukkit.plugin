@@ -24,7 +24,6 @@ public class PostOffice extends JavaPlugin {
 			this);
 	private final PostOfficePlayerListener playerListener = new PostOfficePlayerListener(
 			this);
-	//public static Server server;
 
 	PluginDescriptionFile pdfFile;
 	Properties dbProperties = new Properties();
@@ -39,27 +38,6 @@ public class PostOffice extends JavaPlugin {
 
 	private applicationState currentState;
 	private boolean isEnabled = true;
-
-//	public PostOffice(PluginLoader pluginLoader, Server instance,
-//			PluginDescriptionFile desc, File folder, File plugin,
-//			ClassLoader cLoader) {
-//		super(pluginLoader, instance, desc, folder, plugin, cLoader);
-//		//server = instance;
-//
-//		this.setCurrentState(applicationState.NORMAL);
-//
-//		// load our postoffice.properties file
-//		try {
-//			dbProperties.load(new FileInputStream("postoffice.properties"));
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//			this.isEnabled = false;
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			this.isEnabled = false;
-//		}
-//
-//	}
 
 	public int getMaterialId() {
 		return materialId;
@@ -168,7 +146,6 @@ public class PostOffice extends JavaPlugin {
 	public void assertQueryEvent(String query) {
 		RDBMScoreQueryEvent rcqe = new RDBMScoreQueryEvent(pdfFile.getName(),
 				query);
-		//PostOffice.server.getPluginManager().callEvent(rcqe);
 		getServer().getPluginManager().callEvent(rcqe);
 	}
 
@@ -178,7 +155,6 @@ public class PostOffice extends JavaPlugin {
 		RDBMScoreDBConnectEvent rcdce = new RDBMScoreDBConnectEvent(
 				pdfFile.getName(), userName, password, dbms, serverName,
 				portNumber, database, driver);
-		//PostOffice.server.getPluginManager().callEvent(rcdce);
 		getServer().getPluginManager().callEvent(rcdce);
 	}
 
@@ -188,7 +164,6 @@ public class PostOffice extends JavaPlugin {
 		RDBMScoreDBDisconnectEvent rcdde = new RDBMScoreDBDisconnectEvent(
 				pdfFile.getName(), userName, password, dbms, serverName,
 				portNumber, database, driver);
-		//PostOffice.server.getPluginManager().callEvent(rcdde);
 		getServer().getPluginManager().callEvent(rcdde);
 	}
 
@@ -196,21 +171,18 @@ public class PostOffice extends JavaPlugin {
 			String message) {
 		PostOfficeSendMessageEvent posme = new PostOfficeSendMessageEvent(
 				sender, recipient, message);
-		//PostOffice.server.getPluginManager().callEvent(posme);
 		getServer().getPluginManager().callEvent(posme);
 	}
 
 	public void assertReadMessageEvent(String recipient) {
 		PostOfficeReadMessageEvent porme = new PostOfficeReadMessageEvent(
 				recipient);
-		//PostOffice.server.getPluginManager().callEvent(porme);
 		getServer().getPluginManager().callEvent(porme);
 	}
 
 	public void assertMarkMessagesReadEvent(String recipient) {
 		PostOfficeMarkMessagesReadEvent pommrme = new PostOfficeMarkMessagesReadEvent(
 				recipient);
-		//PostOffice.server.getPluginManager().callEvent(pommrme);
 		getServer().getPluginManager().callEvent(pommrme);
 	}
 
@@ -218,33 +190,28 @@ public class PostOffice extends JavaPlugin {
 			int materialId, int amount) {
 		PostOfficeSendPackageEvent pospe = new PostOfficeSendPackageEvent(
 				sender, recipient, materialId, amount);
-		//PostOffice.server.getPluginManager().callEvent(pospe);
 		getServer().getPluginManager().callEvent(pospe);
 	}
 
 	public void assertReceivePackageEvent(String recipient) {
 		PostOfficeReceivePackageEvent porpe = new PostOfficeReceivePackageEvent(
 				recipient);
-		//PostOffice.server.getPluginManager().callEvent(porpe);
 		getServer().getPluginManager().callEvent(porpe);
 	}
 
 	public void assertMarkPackagesReadEvent(String recipient) {
 		PostOfficeMarkPackagesReadEvent pompre = new PostOfficeMarkPackagesReadEvent(
 				recipient);
-		//PostOffice.server.getPluginManager().callEvent(pompre);
 		getServer().getPluginManager().callEvent(pompre);
 	}
 
 	public void assertRegisterPlayerEvent(String name) {
 		PostOfficeRegisterPlayerEvent porpe = new PostOfficeRegisterPlayerEvent(name);
-		//PostOffice.server.getPluginManager().callEvent(porpe);
 		getServer().getPluginManager().callEvent(porpe);
 	}
 
 	public void assertRecallPackageEvent(String name) {
 		PostOfficeRecallPackageEvent porpe = new PostOfficeRecallPackageEvent(name);
-		//PostOffice.server.getPluginManager().callEvent(porpe);
 		getServer().getPluginManager().callEvent(porpe);
 	}
 

@@ -34,15 +34,12 @@ public class PostOfficeEventListener extends CustomEventListener {
 				((RDBMScoreQueryResultEvent) customEvent).setCancelled(true);
 			}
 		} else if (customEvent instanceof PostOfficeSendMessageEvent) {
-			// then we need to handle to the inbound message
 			onPostOfficeSendMessageEvent((PostOfficeSendMessageEvent) customEvent);
 			((PostOfficeSendMessageEvent) customEvent).setCancelled(true);
 		} else if (customEvent instanceof PostOfficeReadMessageEvent) {
-			// then we need to handle to the inbound message
 			onPostOfficeReadMessageEvent((PostOfficeReadMessageEvent) customEvent);
 			((PostOfficeReadMessageEvent) customEvent).setCancelled(true);
 		} else if (customEvent instanceof PostOfficeMarkMessagesReadEvent) {
-			// then we need to handle to the inbound message
 			onPostOfficeMarkMessagesReadEvent((PostOfficeMarkMessagesReadEvent) customEvent);
 			((PostOfficeMarkMessagesReadEvent) customEvent).setCancelled(true);
 		} else if (customEvent instanceof PostOfficeSendPackageEvent) {
@@ -67,9 +64,6 @@ public class PostOfficeEventListener extends CustomEventListener {
 			PostOfficeRecallPackageEvent customEvent) {
 		String SQL = "CALL `sp_onPostOfficeRecallPackageEvent`('" + customEvent.getRecipient() + "')";
 		System.out.println("[postoffice] SQL: " + SQL);
-//		RDBMScoreQueryEvent rcqe = new RDBMScoreQueryEvent(
-//				plugin.pdfFile.getName(), SQL);
-//		PostOffice.server.getPluginManager().callEvent(rcqe);
 		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
 	
@@ -78,45 +72,23 @@ public class PostOfficeEventListener extends CustomEventListener {
 			PostOfficeRegisterPlayerEvent customEvent) {
 		String SQL = "CALL `sp_RegisterUser`('" + customEvent.getPlayer() + "')";
 		System.out.println("[postoffice] SQL: " + SQL);
-//		RDBMScoreQueryEvent rcqe = new RDBMScoreQueryEvent(
-//				plugin.pdfFile.getName(), SQL);
-//		//PostOffice.server.getPluginManager().callEvent(rcqe);
 		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
 
 	private void onPostOfficeMarkPackagesReadEvent(
 			PostOfficeMarkPackagesReadEvent customEvent) {
-		//String state = "READ";
 		String recipient = customEvent.getRecipient();
-		//String SQL = "update po_package set state='" + state
-		//		+ "' where recipient='" + recipient + "'";
 		String SQL = "CALL `sp_onPostOfficeMarkPackagesReadEvent`('" + recipient + "');";
 		System.out.println("[postoffice] SQL: " + SQL);
-
-//		RDBMScoreQueryEvent rcqe = new RDBMScoreQueryEvent(
-//				plugin.pdfFile.getName(), SQL);
-//		PostOffice.server.getPluginManager().callEvent(rcqe);
 		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
 
 	private void onPostOfficeReceivePackageEvent(
 			PostOfficeReceivePackageEvent customEvent) {
-		// TODO Auto-generated method stub
-
-		// we need to get the items to be deliveried
-		// via sql
-		// then for each entry give to player
 		String recipient = customEvent.getRecipient();
-		//String SQL = "select * from po_package where state='UNREAD' and recipient='"
-		//		+ recipient + "'";
 		String SQL = "CALL `sp_onPostOfficeReceivePackageEvent`('" + recipient + "');";
 		System.out.println("[postoffice] SQL: " + SQL);
-
 		plugin.setCurrentState(applicationState.RESPONSE_PACKAGE_RECEIVE);
-
-//		RDBMScoreQueryEvent rcqe = new RDBMScoreQueryEvent(
-//				plugin.pdfFile.getName(), SQL);
-//		PostOffice.server.getPluginManager().callEvent(rcqe);
 		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
 
@@ -128,7 +100,6 @@ public class PostOfficeEventListener extends CustomEventListener {
 				"MM-dd-yyyy hh:mm:ss a");
 		String strDateNow = formatter.format(dateNow);
 
-		//String state = "UNREAD";
 		String sender = customEvent.getSender();
 		String recipient = customEvent.getRecipient();
 		int materialId = customEvent.getMaterialId();
@@ -138,26 +109,13 @@ public class PostOfficeEventListener extends CustomEventListener {
 		plugin.setAmount(amount);
 
 		// see if the sender has the package to send..
-		if (senderHasPackage(materialId, amount)) {
-//			String SQL = "insert into po_package (datetime, state, sender, recipient, materialId, amount) values ('"
-//					+ strDataNow
-//					+ "', '"
-//					+ state
-//					+ "', '"
-//					+ sender
-//					+ "', '"
-//					+ recipient + "', '" + materialId + "', '" + amount + "')";
-			
+		if (senderHasPackage(materialId, amount)) {		
 			String SQL="CALL `sp_onPostOfficeSendPackageEvent`('" + strDateNow + "', '" + sender + "', '" + recipient + "', '" + materialId + "', '" + amount + "');";
 			System.out.println("[postoffice] SQL: " + SQL);
 
 			// we need our 'send-receipt before we take the items from the
 			// sender'
 			plugin.setCurrentState(applicationState.WAIT_FOR_SEND_RECEIPT);
-
-//			RDBMScoreQueryEvent rcqe = new RDBMScoreQueryEvent(
-//					plugin.pdfFile.getName(), SQL);
-//			PostOffice.server.getPluginManager().callEvent(rcqe);
 			plugin.assertRDBMScoreQueryEvent(SQL);
 
 		} else {
@@ -211,41 +169,20 @@ public class PostOfficeEventListener extends CustomEventListener {
 
 	private void onPostOfficeMarkMessagesReadEvent(
 			PostOfficeMarkMessagesReadEvent customEvent) {
-
-//		String state = "READ";
 		String recipient = customEvent.getRecipient();
-//		String SQL = "update postoffice set state='" + state
-//				+ "' where recipient='" + recipient + "'";
 		String SQL = "CALL `sp_onPostOfficeMarkMessagesReadEvent`('" + recipient + "');";
-
 		System.out.println("[postoffice] SQL: " + SQL);
-
-//		RDBMScoreQueryEvent rcqe = new RDBMScoreQueryEvent(
-//				plugin.pdfFile.getName(), SQL);
-//		PostOffice.server.getPluginManager().callEvent(rcqe);
 		plugin.assertRDBMScoreQueryEvent(SQL);
-
 	}
 
 	private void onPostOfficeReadMessageEvent(
 			PostOfficeReadMessageEvent customEvent) {
-		// TODO Auto-generated method stub
 		// pull mail from database
-
 		String recipient = customEvent.getRecipient();
-//		String SQL = "select * from postoffice where state='UNREAD' and recipient='"
-//				+ recipient + "'";
-		String SQL = "CALL `sp_onPostOfficeReadMessageEvent`('" + recipient + "')";
-		
+		String SQL = "CALL `sp_onPostOfficeReadMessageEvent`('" + recipient + "')";	
 		System.out.println("[postoffice] SQL: " + SQL);
-
 		plugin.setCurrentState(applicationState.RESPONSE_READ);
-
-//		RDBMScoreQueryEvent rcqe = new RDBMScoreQueryEvent(
-//				plugin.pdfFile.getName(), SQL);
-//		PostOffice.server.getPluginManager().callEvent(rcqe);
 		plugin.assertRDBMScoreQueryEvent(SQL);
-
 	}
 
 	private void onPostOfficeSendMessageEvent(
@@ -257,7 +194,6 @@ public class PostOfficeEventListener extends CustomEventListener {
 				"MM-dd-yyyy hh:mm:ss a");
 		String strDateNow = formatter.format(dateNow);
 
-		//String state = "UNREAD";
 		String sender = customEvent.getSender();
 		String recipient = customEvent.getRecipient();
 		String message = customEvent.getMessage();
@@ -291,25 +227,9 @@ public class PostOfficeEventListener extends CustomEventListener {
 		message = message.replace("\n" , "\\\n");
 		message = message.replace("\t" , "\\\t");
 		message = message.replace("\\" , "\\\\");
-		
-		
-//		String SQL = "insert into postoffice (datetime, state, sender, recipient, message) values ('"
-//				+ strDataNow
-//				+ "', '"
-//				+ state
-//				+ "', '"
-//				+ sender
-//				+ "', '"
-//				+ recipient + "', '" + message + "')";
 
 		String SQL="CALL `sp_onPostOfficeSendMessageEvent`('" + strDateNow + "', '" + sender + "', '" + recipient + "', '" + message + "')";
-		
-		
 		System.out.println("[postoffice] SQL: " + SQL);
-
-//		RDBMScoreQueryEvent rcqe = new RDBMScoreQueryEvent(
-//				plugin.pdfFile.getName(), SQL);
-//		PostOffice.server.getPluginManager().callEvent(rcqe);
 		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
 
