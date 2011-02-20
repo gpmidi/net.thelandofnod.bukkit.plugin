@@ -213,7 +213,7 @@ public class PostOfficeEventListener extends CustomEventListener {
 		recipient = recipient.replace("\0", "");
 		recipient = recipient.replace("\'" , "");
 		recipient = recipient.replace("\"" , "");
-		recipient = recipient.replace("\b" , "");
+		//recipient = recipient.replace("\b" , "");
 		recipient = recipient.replace("\n" , "");
 		recipient = recipient.replace("\t" , "");
 		recipient = recipient.replace("\\" , "");
@@ -223,7 +223,7 @@ public class PostOfficeEventListener extends CustomEventListener {
 		message = message.replace("\0", "\\\0");
 		message = message.replace("\'" , "\\\'");
 		message = message.replace("\"" , "\\\"");
-		message = message.replace("\b" , "\\\b");
+		//message = message.replace("\b" , "\\\b");
 		message = message.replace("\n" , "\\\n");
 		message = message.replace("\t" , "\\\t");
 		message = message.replace("\\" , "\\\\");
@@ -300,7 +300,7 @@ public class PostOfficeEventListener extends CustomEventListener {
 								message = message.replace("\\\0" , "\0");
 								message = message.replace("\\\'" , "\'");
 								message = message.replace("\\\"" , "\"");
-								message = message.replace("\\\b" , "\b");
+								//message = message.replace("\\\b" , "\b");
 								message = message.replace("\\\n" , "\n");
 								message = message.replace("\\\t" , "\t");
 								message = message.replace("\\\\" , "\\");
