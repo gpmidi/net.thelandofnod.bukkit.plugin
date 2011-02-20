@@ -3,7 +3,7 @@ package net.thelandofnod.bukkit.plugin.rdbmscore;
 import java.sql.Connection;
 import java.util.HashMap;
 
-public class RDBMScoreClientRegistry {
+public class RDBMScoreClientRegistry implements Runnable {
 
 	// HashMap of connection objects to plugins names (as string key)
 	HashMap<String, Connection> connectionRegistry = new HashMap<String, Connection>();
@@ -109,6 +109,12 @@ public class RDBMScoreClientRegistry {
 			return driverRegistry.get(ownerPlugin);
 		}
 		return null;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

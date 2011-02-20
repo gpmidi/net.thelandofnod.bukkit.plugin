@@ -1,6 +1,6 @@
 package net.thelandofnod.bukkit.plugin.rdbmscore;
 
-import java.io.File;
+//import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -10,10 +10,10 @@ import java.util.Properties;
 
 import javax.sql.rowset.CachedRowSet;
 
-import org.bukkit.Server;
+//import org.bukkit.Server;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoader;
+//import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,21 +31,12 @@ public class RDBMScore extends JavaPlugin {
 	private final RDBMScoreEventListener queryListener = new RDBMScoreEventListener(
 			this);
 
-	public static Server server;
 	private RDBMScoreClientRegistry clientRegistry = new RDBMScoreClientRegistry();
 
-	public RDBMScore(PluginLoader pluginLoader, Server instance,
-			PluginDescriptionFile desc, File folder, File plugin,
-			ClassLoader cLoader) {
-		super(pluginLoader, instance, desc, folder, plugin, cLoader);
-
-		// NOTE: Event registration should be done in onEnable not here as all
-		// events are unregistered when a plugin is disabled
-		server = instance;
-	}
 
 	@Override
 	public void onEnable() {
+		
 		PluginManager pm = getServer().getPluginManager();
 
 		// Create listeners
@@ -80,7 +71,7 @@ public class RDBMScore extends JavaPlugin {
 		String ownerPlugin = rcqe.getOwnerPlugin();
 		String queryString = rcqe.getQuery();
 		boolean stale = false;
-		// String queryString = Matcher.quoteReplacement(rcqe.getQuery());
+
 
 		// create our response object and give the sender ownership
 		RDBMScoreQueryResultEvent rcqre = new RDBMScoreQueryResultEvent(
@@ -183,7 +174,9 @@ public class RDBMScore extends JavaPlugin {
 
 			// asserting our query results event ..
 			// even if we caught exceptions along the way..
-			RDBMScore.server.getPluginManager().callEvent(rcqre);
+			//RDBMScore.server.getPluginManager().callEvent(rcqre);
+			PluginManager pm = getServer().getPluginManager();
+			pm.callEvent(rcqre);
 		}
 	}
 
