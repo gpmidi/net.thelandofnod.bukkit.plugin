@@ -34,6 +34,7 @@ public class PostOfficePlayerListener extends PlayerListener {
 			event.getPlayer().sendMessage("Usage: /postoffice send player message");
 			event.getPlayer().sendMessage("Usage: /postoffice package send player amount materialId");
 			event.getPlayer().sendMessage("Usage: /postoffice package get");
+			event.getPlayer().sendMessage("Usage: /postoffice package recall");
 		} else {
 			String[] split = event.getMessage().split(" ");
 try{
@@ -88,6 +89,7 @@ try{
 //						event.getPlayer().sendMessage("Incorrect usage syntax.");
 						event.getPlayer().sendMessage("Usage: /postoffice package send player amount materialId");
 						event.getPlayer().sendMessage("Usage: /postoffice package get");
+						event.getPlayer().sendMessage("Usage: /postoffice package recall");
 					}
 				}
 				else{
@@ -97,6 +99,7 @@ try{
 					event.getPlayer().sendMessage("Usage: /postoffice send player message");
 					event.getPlayer().sendMessage("Usage: /postoffice package send player amount materialId");
 					event.getPlayer().sendMessage("Usage: /postoffice package get");
+					event.getPlayer().sendMessage("Usage: /postoffice package recall");
 				}
 			}
 }catch(Exception ArrayIndexOutOfBoundsException){
@@ -106,6 +109,7 @@ try{
 	event.getPlayer().sendMessage("Usage: /postoffice send player message");
 	event.getPlayer().sendMessage("Usage: /postoffice package send player amount materialId");
 	event.getPlayer().sendMessage("Usage: /postoffice package get");
+	event.getPlayer().sendMessage("Usage: /postoffice package recall");
 }
 		}
 	}
