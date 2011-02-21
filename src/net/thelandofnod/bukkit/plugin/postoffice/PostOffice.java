@@ -1,6 +1,5 @@
 package net.thelandofnod.bukkit.plugin.postoffice;
 
-//import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,12 +9,10 @@ import net.thelandofnod.bukkit.plugin.rdbmscore.RDBMScoreDBConnectEvent;
 import net.thelandofnod.bukkit.plugin.rdbmscore.RDBMScoreDBDisconnectEvent;
 import net.thelandofnod.bukkit.plugin.rdbmscore.RDBMScoreQueryEvent;
 
-//import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-//import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -68,69 +65,73 @@ public class PostOffice extends JavaPlugin {
 					dbProperties.getProperty("db.driver"));
 		}
 		this.isEnabled = false;
-		
+
 		System.out.println(pdfFile.getName() + " version "
-				+ pdfFile.getVersion() + " is disabled!");		
+				+ pdfFile.getVersion() + " is disabled!");
 	}
 
 	@Override
 	public void onEnable() {
-		
+
 		this.setCurrentState(applicationState.NORMAL);
 
 		// load our postoffice.properties file
 		try {
 			dbProperties.load(new FileInputStream("postoffice.properties"));
+			// Register our events
+			PluginManager pm = getServer().getPluginManager();
+
+			// Dependency Check
+			// Ensure that rdbmscore has been loaded otherwise we disable
+			// ourselves...
+			Plugin p = null;
+			p = getServer().getPluginManager().getPlugin("rdbmscore");
+			if (p != null) {
+
+				// see if plugin is loaded
+				if (p.isEnabled()) {
+					pm.registerEvent(Event.Type.CUSTOM_EVENT, this.eventListener,
+							Event.Priority.Normal, this);
+					pm.registerEvent(Event.Type.PLAYER_COMMAND, this.playerListener, 
+							Event.Priority.Normal, this);
+					pm.registerEvent(Event.Type.PLAYER_JOIN, this.playerListener,
+							Event.Priority.Normal, this);
+
+					pdfFile = this.getDescription();
+
+					// assert out DB Connection Event..
+					this.assertDBConnectEvent(
+							dbProperties.getProperty("db.username"),
+							dbProperties.getProperty("db.password"),
+							dbProperties.getProperty("db.rdbms"),
+							dbProperties.getProperty("db.servername"),
+							dbProperties.getProperty("db.portnumber"),
+							dbProperties.getProperty("db.database"),
+							dbProperties.getProperty("db.driver"));
+
+					System.out.println("[postoffice] " + pdfFile.getName() + " version "
+							+ pdfFile.getVersion() + " is enabled!");
+				} else {
+					// then we don't have our dependencies!
+					System.out
+							.println("[postoffice] rdbmscore must load prior to this plugin, going dormant!");
+					this.isEnabled = false;
+				}
+			} else {
+				// then we don't have our dependencies!
+				System.out
+						.println("[postoffice] Could not find dependency rdbmscore, going dormant!");
+				this.isEnabled = false;
+			}
 		} catch (FileNotFoundException e) {
+			System.out
+			.println("[postoffice] Could not find postoffice.properties, going dormant!");
 			e.printStackTrace();
 			this.isEnabled = false;
 		} catch (IOException e) {
+			System.out
+			.println("[postoffice] Could not open postoffice.properties, going dormant!");
 			e.printStackTrace();
-			this.isEnabled = false;
-		}
-		
-		
-		// Register our events
-		PluginManager pm = getServer().getPluginManager();
-
-		// Dependency Check
-		// Ensure that rdbmscore has been loaded otherwise we disable
-		// ourselves...
-		Plugin p = null;
-		p = getServer().getPluginManager().getPlugin("rdbmscore");
-		if (p != null) {
-
-			// see if plugin is loaded
-			if (p.isEnabled()){
-				pm.registerEvent(Event.Type.CUSTOM_EVENT, this.eventListener,
-						Event.Priority.Normal, this);
-				pm.registerEvent(Event.Type.PLAYER_COMMAND, this.playerListener,
-						Event.Priority.Normal, this);
-				pm.registerEvent(Event.Type.PLAYER_JOIN , this.playerListener,
-						Event.Priority.Normal, this);
-
-				pdfFile = this.getDescription();
-
-				// assert out DB Connection Event..
-				this.assertDBConnectEvent(dbProperties.getProperty("db.username"),
-						dbProperties.getProperty("db.password"),
-						dbProperties.getProperty("db.rdbms"),
-						dbProperties.getProperty("db.servername"),
-						dbProperties.getProperty("db.portnumber"),
-						dbProperties.getProperty("db.database"),
-						dbProperties.getProperty("db.driver"));
-
-				System.out.println(pdfFile.getName() + " version "
-						+ pdfFile.getVersion() + " is enabled!");
-			}
-			else{
-				// then we don't have our dependencies!
-				System.out.println("[postoffice] rdbmscore must load prior to this plugin, going dormant!");
-				this.isEnabled = false;				
-			}
-		} else {
-			// then we don't have our dependencies!
-			System.out.println("[postoffice] Could not find dependency rdbmscore, going dormant!");
 			this.isEnabled = false;
 		}
 	}
@@ -206,12 +207,14 @@ public class PostOffice extends JavaPlugin {
 	}
 
 	public void assertRegisterPlayerEvent(String name) {
-		PostOfficeRegisterPlayerEvent porpe = new PostOfficeRegisterPlayerEvent(name);
+		PostOfficeRegisterPlayerEvent porpe = new PostOfficeRegisterPlayerEvent(
+				name);
 		getServer().getPluginManager().callEvent(porpe);
 	}
 
 	public void assertRecallPackageEvent(String name) {
-		PostOfficeRecallPackageEvent porpe = new PostOfficeRecallPackageEvent(name);
+		PostOfficeRecallPackageEvent porpe = new PostOfficeRecallPackageEvent(
+				name);
 		getServer().getPluginManager().callEvent(porpe);
 	}
 
@@ -227,9 +230,10 @@ public class PostOffice extends JavaPlugin {
 	}
 
 	public void assertMarkMessageReadEvent(String name, Integer messageIndex) {
-		PostOfficeMarkMessageReadEvent pommre = new PostOfficeMarkMessageReadEvent(name, messageIndex);
+		PostOfficeMarkMessageReadEvent pommre = new PostOfficeMarkMessageReadEvent(
+				name, messageIndex);
 		getServer().getPluginManager().callEvent(pommre);
-		
+
 	}
 
 }

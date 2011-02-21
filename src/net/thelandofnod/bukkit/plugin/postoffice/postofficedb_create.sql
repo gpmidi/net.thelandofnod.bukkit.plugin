@@ -20,6 +20,12 @@
 
 CREATE DATABASE IF NOT EXISTS postofficedb;
 USE postofficedb;
+
+--
+-- Definition of table `postofficedb`.`po_mail`
+--
+
+DROP TABLE IF EXISTS `postofficedb`.`po_mail`;
 CREATE TABLE  `postofficedb`.`po_mail` (
   `index` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Auto-generated unique IDs for each message we track in the system',
   `datetime` text NOT NULL COMMENT 'The timestamp for the message',
@@ -28,12 +34,29 @@ CREATE TABLE  `postofficedb`.`po_mail` (
   `recipient` varchar(50) NOT NULL COMMENT 'the player or mechanism that is to receive the message',
   `message` text NOT NULL COMMENT 'the payload of the message',
   PRIMARY KEY (`index`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COMMENT='net.thelandofnod.bukkit.plugin.postoffice';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 COMMENT='net.thelandofnod.bukkit.plugin.postoffice';
+
+--
+-- Dumping data for table `postofficedb`.`po_mail`
+--
+
+/*!40000 ALTER TABLE `po_mail` DISABLE KEYS */;
+LOCK TABLES `po_mail` WRITE;
 INSERT INTO `postofficedb`.`po_mail` VALUES  (1,'02-20-2011 05:47:59 PM','READ','offstar','offstar','hello offstar!'),
  (2,'02-20-2011 05:48:11 PM','READ','offstar','offstar','this is a test message...'),
  (3,'02-20-2011 08:52:03 PM','READ','offstar','offstar','sfdwjerhoi2i34i5ojrkjskdjfwejtrlksjflksjdtkj4lktrjwer'),
  (4,'02-20-2011 10:17:18 PM','READ','offstar','offstar','test'),
- (5,'02-20-2011 10:31:28 PM','UNREAD','offstar','forestdweller','hello! How are you?');
+ (5,'02-20-2011 10:31:28 PM','UNREAD','offstar','forestdweller','hello! How are you?'),
+ (6,'02-21-2011 02:47:54 PM','READ','offstar','offstar','this is another test message.');
+UNLOCK TABLES;
+/*!40000 ALTER TABLE `po_mail` ENABLE KEYS */;
+
+
+--
+-- Definition of table `postofficedb`.`po_package`
+--
+
+DROP TABLE IF EXISTS `postofficedb`.`po_package`;
 CREATE TABLE  `postofficedb`.`po_package` (
   `index` int(11) NOT NULL AUTO_INCREMENT,
   `datetime` text NOT NULL,
@@ -43,15 +66,48 @@ CREATE TABLE  `postofficedb`.`po_package` (
   `materialId` int(11) NOT NULL,
   `amount` int(11) NOT NULL,
   PRIMARY KEY (`index`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `postofficedb`.`po_package`
+--
+
+/*!40000 ALTER TABLE `po_package` DISABLE KEYS */;
+LOCK TABLES `po_package` WRITE;
 INSERT INTO `postofficedb`.`po_package` VALUES  (1,'02-20-2011 07:21:25 PM','READ','offstar','offstar',46,64),
- (2,'02-20-2011 07:22:45 PM','READ','offstar','offstar',46,64);
+ (2,'02-20-2011 07:22:45 PM','READ','offstar','offstar',46,64),
+ (3,'02-21-2011 11:07:01 AM','READ','offstar','offstar',46,64);
+UNLOCK TABLES;
+/*!40000 ALTER TABLE `po_package` ENABLE KEYS */;
+
+
+--
+-- Definition of table `postofficedb`.`po_userregistry`
+--
+
+DROP TABLE IF EXISTS `postofficedb`.`po_userregistry`;
 CREATE TABLE  `postofficedb`.`po_userregistry` (
   `username` varchar(50) NOT NULL,
   PRIMARY KEY (`username`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `postofficedb`.`po_userregistry`
+--
+
+/*!40000 ALTER TABLE `po_userregistry` DISABLE KEYS */;
+LOCK TABLES `po_userregistry` WRITE;
 INSERT INTO `postofficedb`.`po_userregistry` VALUES  ('forestdweller'),
  ('offstar');
+UNLOCK TABLES;
+/*!40000 ALTER TABLE `po_userregistry` ENABLE KEYS */;
+
+
+--
+-- Definition of function `postofficedb`.`IsRegistered`
+--
+
+DROP FUNCTION IF EXISTS `postofficedb`.`IsRegistered`;
 
 DELIMITER $$
 
@@ -63,6 +119,12 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
+
+--
+-- Definition of procedure `postofficedb`.`sp_onPostOfficeMarkMessageReadEvent`
+--
+
+DROP PROCEDURE IF EXISTS `postofficedb`.`sp_onPostOfficeMarkMessageReadEvent`;
 
 DELIMITER $$
 
@@ -79,6 +141,12 @@ END $$
 
 DELIMITER ;
 
+--
+-- Definition of procedure `postofficedb`.`sp_onPostOfficeMarkMessagesReadEvent`
+--
+
+DROP PROCEDURE IF EXISTS `postofficedb`.`sp_onPostOfficeMarkMessagesReadEvent`;
+
 DELIMITER $$
 
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='' */ $$
@@ -93,6 +161,12 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
+
+--
+-- Definition of procedure `postofficedb`.`sp_onPostOfficeMarkPackagesReadEvent`
+--
+
+DROP PROCEDURE IF EXISTS `postofficedb`.`sp_onPostOfficeMarkPackagesReadEvent`;
 
 DELIMITER $$
 
@@ -109,6 +183,12 @@ END $$
 
 DELIMITER ;
 
+--
+-- Definition of procedure `postofficedb`.`sp_onPostOfficeReadMessageEvent`
+--
+
+DROP PROCEDURE IF EXISTS `postofficedb`.`sp_onPostOfficeReadMessageEvent`;
+
 DELIMITER $$
 
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='' */ $$
@@ -122,6 +202,12 @@ END $$
 
 DELIMITER ;
 
+--
+-- Definition of procedure `postofficedb`.`sp_onPostOfficeReadMessageWithIdEvent`
+--
+
+DROP PROCEDURE IF EXISTS `postofficedb`.`sp_onPostOfficeReadMessageWithIdEvent`;
+
 DELIMITER $$
 
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='' */ $$
@@ -134,6 +220,12 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
+
+--
+-- Definition of procedure `postofficedb`.`sp_onPostOfficeRecallPackageEvent`
+--
+
+DROP PROCEDURE IF EXISTS `postofficedb`.`sp_onPostOfficeRecallPackageEvent`;
 
 DELIMITER $$
 
@@ -150,6 +242,12 @@ END $$
 
 DELIMITER ;
 
+--
+-- Definition of procedure `postofficedb`.`sp_onPostOfficeReceivePackageEvent`
+--
+
+DROP PROCEDURE IF EXISTS `postofficedb`.`sp_onPostOfficeReceivePackageEvent`;
+
 DELIMITER $$
 
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='' */ $$
@@ -162,6 +260,12 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
+
+--
+-- Definition of procedure `postofficedb`.`sp_onPostOfficeSendMessageEvent`
+--
+
+DROP PROCEDURE IF EXISTS `postofficedb`.`sp_onPostOfficeSendMessageEvent`;
 
 DELIMITER $$
 
@@ -177,6 +281,12 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
+
+--
+-- Definition of procedure `postofficedb`.`sp_onPostOfficeSendPackageEvent`
+--
+
+DROP PROCEDURE IF EXISTS `postofficedb`.`sp_onPostOfficeSendPackageEvent`;
 
 DELIMITER $$
 
@@ -195,6 +305,12 @@ END $$
 
 DELIMITER ;
 
+--
+-- Definition of procedure `postofficedb`.`sp_onPostOfficeViewInboxEvent`
+--
+
+DROP PROCEDURE IF EXISTS `postofficedb`.`sp_onPostOfficeViewInboxEvent`;
+
 DELIMITER $$
 
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='' */ $$
@@ -209,6 +325,12 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
+
+--
+-- Definition of procedure `postofficedb`.`sp_RegisterUser`
+--
+
+DROP PROCEDURE IF EXISTS `postofficedb`.`sp_RegisterUser`;
 
 DELIMITER $$
 

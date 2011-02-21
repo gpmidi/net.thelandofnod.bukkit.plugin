@@ -3,8 +3,8 @@ package net.thelandofnod.bukkit.plugin.postoffice;
 import org.bukkit.event.Cancellable;
 
 public class PostOfficeRecallPackageEvent extends org.bukkit.event.Event
-implements Cancellable {
-	
+		implements Cancellable {
+
 	private boolean cancel = false;
 	private String recipient;
 

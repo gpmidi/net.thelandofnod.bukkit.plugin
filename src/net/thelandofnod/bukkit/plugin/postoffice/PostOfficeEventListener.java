@@ -8,8 +8,6 @@ import java.util.HashMap;
 import javax.sql.rowset.CachedRowSet;
 
 import net.thelandofnod.bukkit.plugin.postoffice.PostOffice.applicationState;
-//import net.thelandofnod.bukkit.plugin.rdbmscore.RDBMScoreDBDisconnectEvent;
-//import net.thelandofnod.bukkit.plugin.rdbmscore.RDBMScoreQueryEvent;
 import net.thelandofnod.bukkit.plugin.rdbmscore.RDBMScoreQueryResultEvent;
 
 import org.bukkit.event.CustomEventListener;
@@ -51,7 +49,7 @@ public class PostOfficeEventListener extends CustomEventListener {
 		} else if (customEvent instanceof PostOfficeMarkPackagesReadEvent) {
 			onPostOfficeMarkPackagesReadEvent((PostOfficeMarkPackagesReadEvent) customEvent);
 			((PostOfficeMarkPackagesReadEvent) customEvent).setCancelled(true);
-		} else if (customEvent instanceof PostOfficeRegisterPlayerEvent){
+		} else if (customEvent instanceof PostOfficeRegisterPlayerEvent) {
 			onPostOfficeRegisterPlayerEvent((PostOfficeRegisterPlayerEvent) customEvent);
 			((PostOfficeRegisterPlayerEvent) customEvent).setCancelled(true);
 		} else if (customEvent instanceof PostOfficeRecallPackageEvent) {
@@ -73,47 +71,52 @@ public class PostOfficeEventListener extends CustomEventListener {
 			PostOfficeMarkMessageReadEvent customEvent) {
 		String recipient = customEvent.getRecipient();
 		Integer messageIndex = customEvent.getMessageIndex();
-		String SQL = "CALL `sp_onPostOfficeMarkMessageReadEvent`('" + recipient + "', " + messageIndex.toString() + ");";
-		System.out.println("[postoffice] SQL: " + SQL);
+		String SQL = "CALL `sp_onPostOfficeMarkMessageReadEvent`('" + recipient
+				+ "', " + messageIndex.toString() + ");";
+//		System.out.println("[postoffice] SQL: " + SQL);
 		plugin.assertRDBMScoreQueryEvent(SQL);
-		
+
 	}
 
 	private void onPostOfficeViewInboxEvent(PostOfficeViewInboxEvent customEvent) {
-		String SQL = "CALL `sp_onPostOfficeViewInboxEvent`('" + customEvent.getPlayerName() + "')";
-		System.out.println("[postoffice] SQL: " + SQL);
+		String SQL = "CALL `sp_onPostOfficeViewInboxEvent`('"
+				+ customEvent.getPlayerName() + "')";
+//		System.out.println("[postoffice] SQL: " + SQL);
 		plugin.setCurrentState(applicationState.SHOW_INBOX);
 		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
 
 	private void onPostOfficeRecallPackageEvent(
 			PostOfficeRecallPackageEvent customEvent) {
-		String SQL = "CALL `sp_onPostOfficeRecallPackageEvent`('" + customEvent.getRecipient() + "')";
-		System.out.println("[postoffice] SQL: " + SQL);
+		String SQL = "CALL `sp_onPostOfficeRecallPackageEvent`('"
+				+ customEvent.getRecipient() + "')";
+//		System.out.println("[postoffice] SQL: " + SQL);
 		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
-	
 
 	private void onPostOfficeRegisterPlayerEvent(
 			PostOfficeRegisterPlayerEvent customEvent) {
-		String SQL = "CALL `sp_RegisterUser`('" + customEvent.getPlayer() + "')";
-		System.out.println("[postoffice] SQL: " + SQL);
+		String SQL = "CALL `sp_RegisterUser`('" + customEvent.getPlayer()
+				+ "')";
+//		System.out.println("[postoffice] SQL: " + SQL);
 		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
 
 	private void onPostOfficeMarkPackagesReadEvent(
 			PostOfficeMarkPackagesReadEvent customEvent) {
 		String recipient = customEvent.getRecipient();
-		String SQL = "CALL `sp_onPostOfficeMarkPackagesReadEvent`('" + recipient + "');";
-		System.out.println("[postoffice] SQL: " + SQL);
+		String SQL = "CALL `sp_onPostOfficeMarkPackagesReadEvent`('"
+				+ recipient + "');";
+//		System.out.println("[postoffice] SQL: " + SQL);
 		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
 
 	private void onPostOfficeReceivePackageEvent(
 			PostOfficeReceivePackageEvent customEvent) {
 		String recipient = customEvent.getRecipient();
-		String SQL = "CALL `sp_onPostOfficeReceivePackageEvent`('" + recipient + "');";
-		System.out.println("[postoffice] SQL: " + SQL);
+		String SQL = "CALL `sp_onPostOfficeReceivePackageEvent`('" + recipient
+				+ "');";
+//		System.out.println("[postoffice] SQL: " + SQL);
 		plugin.setCurrentState(applicationState.RESPONSE_PACKAGE_RECEIVE);
 		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
@@ -135,9 +138,11 @@ public class PostOfficeEventListener extends CustomEventListener {
 		plugin.setAmount(amount);
 
 		// see if the sender has the package to send..
-		if (senderHasPackage(materialId, amount)) {		
-			String SQL="CALL `sp_onPostOfficeSendPackageEvent`('" + strDateNow + "', '" + sender + "', '" + recipient + "', '" + materialId + "', '" + amount + "');";
-			System.out.println("[postoffice] SQL: " + SQL);
+		if (senderHasPackage(materialId, amount)) {
+			String SQL = "CALL `sp_onPostOfficeSendPackageEvent`('"
+					+ strDateNow + "', '" + sender + "', '" + recipient
+					+ "', '" + materialId + "', '" + amount + "');";
+//			System.out.println("[postoffice] SQL: " + SQL);
 
 			// we need our 'send-receipt before we take the items from the
 			// sender'
@@ -146,10 +151,11 @@ public class PostOfficeEventListener extends CustomEventListener {
 
 		} else {
 			// the sender can't send the package
-			System.out.println("[postoffice] sender " + sender + ", is unable to send "
-					+ recipient + " " + amount + " of " + materialId);
-			plugin.callingPlayer.sendMessage("Unable to send " + recipient + " " + amount
-					+ " of " + materialId);
+//			System.out.println("[postoffice] sender " + sender
+//					+ ", is unable to send " + recipient + " " + amount
+//					+ " of " + materialId);
+			plugin.callingPlayer.sendMessage("[postoffice] Unable to send " + recipient
+					+ " " + amount + " of " + materialId);
 		}
 	}
 
@@ -158,14 +164,16 @@ public class PostOfficeEventListener extends CustomEventListener {
 
 		if (plugin.callingPlayer.getInventory().contains(newPackage)) {
 			newPackage = null;
-			System.out.println("[postoffice] " + plugin.callingPlayer.getDisplayName() + " has "
-					+ plugin.getAmount() + " of " + plugin.getMaterialId()
-					+ " to send.");
+//			System.out.println("[postoffice] "
+//					+ plugin.callingPlayer.getDisplayName() + " has "
+//					+ plugin.getAmount() + " of " + plugin.getMaterialId()
+//					+ " to send.");
 			return true;
 		}
-		System.out.println("[postoffice] " + plugin.callingPlayer.getDisplayName()
-				+ " can't send " + plugin.getAmount() + " of "
-				+ plugin.getMaterialId() + " - not in inventory.");
+//		System.out.println("[postoffice] "
+//				+ plugin.callingPlayer.getDisplayName() + " can't send "
+//				+ plugin.getAmount() + " of " + plugin.getMaterialId()
+//				+ " - not in inventory.");
 		newPackage = null;
 		return false;
 	}
@@ -178,9 +186,9 @@ public class PostOfficeEventListener extends CustomEventListener {
 		ItemStack newPackage = new ItemStack(plugin.getMaterialId(),
 				plugin.getAmount());
 
-		HashMap<Integer, ItemStack> senderInventoryMatches = new HashMap<Integer, ItemStack>();
-		senderInventoryMatches = (HashMap<Integer, ItemStack>) plugin.callingPlayer
-				.getInventory().all(newPackage);
+		HashMap<Integer, ? extends ItemStack> senderInventoryMatches = new HashMap<Integer, ItemStack>();
+		senderInventoryMatches = plugin.callingPlayer.getInventory().all(
+				newPackage);
 
 		plugin.callingPlayer.getInventory().remove(newPackage);
 
@@ -196,8 +204,9 @@ public class PostOfficeEventListener extends CustomEventListener {
 	private void onPostOfficeMarkMessagesReadEvent(
 			PostOfficeMarkMessagesReadEvent customEvent) {
 		String recipient = customEvent.getRecipient();
-		String SQL = "CALL `sp_onPostOfficeMarkMessagesReadEvent`('" + recipient + "');";
-		System.out.println("[postoffice] SQL: " + SQL);
+		String SQL = "CALL `sp_onPostOfficeMarkMessagesReadEvent`('"
+				+ recipient + "');";
+//		System.out.println("[postoffice] SQL: " + SQL);
 		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
 
@@ -205,8 +214,9 @@ public class PostOfficeEventListener extends CustomEventListener {
 			PostOfficeReadMessageEvent customEvent) {
 		String recipient = customEvent.getRecipient();
 		Integer messageIndex = customEvent.getMessageIndex();
-		String SQL = "CALL `sp_onPostOfficeReadMessageWithIdEvent`('" + recipient + "', " + messageIndex.toString() + ");";	
-		System.out.println("[postoffice] SQL: " + SQL);
+		String SQL = "CALL `sp_onPostOfficeReadMessageWithIdEvent`('"
+				+ recipient + "', " + messageIndex.toString() + ");";
+//		System.out.println("[postoffice] SQL: " + SQL);
 		plugin.setCurrentState(applicationState.RESPONSE_READ);
 		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
@@ -233,63 +243,63 @@ public class PostOfficeEventListener extends CustomEventListener {
 		 * following the table. \_ A “_” character. See note following the
 		 * table.
 		 */
-		
-		
+
 		// sanitize recipient name
 		recipient = recipient.replace("\0", "");
-		recipient = recipient.replace("\'" , "");
-		recipient = recipient.replace("\"" , "");
-		//recipient = recipient.replace("\b" , "");
-		recipient = recipient.replace("\n" , "");
-		recipient = recipient.replace("\t" , "");
-		recipient = recipient.replace("\\" , "");
-		
-		
+		recipient = recipient.replace("\'", "");
+		recipient = recipient.replace("\"", "");
+		// recipient = recipient.replace("\b" , "");
+		recipient = recipient.replace("\n", "");
+		recipient = recipient.replace("\t", "");
+		recipient = recipient.replace("\\", "");
+
 		// sanitize string
 		message = message.replace("\0", "\\\0");
-		message = message.replace("\'" , "\\\'");
-		message = message.replace("\"" , "\\\"");
-		//message = message.replace("\b" , "\\\b");
-		message = message.replace("\n" , "\\\n");
-		message = message.replace("\t" , "\\\t");
-		message = message.replace("\\" , "\\\\");
+		message = message.replace("\'", "\\\'");
+		message = message.replace("\"", "\\\"");
+		// message = message.replace("\b" , "\\\b");
+		message = message.replace("\n", "\\\n");
+		message = message.replace("\t", "\\\t");
+		message = message.replace("\\", "\\\\");
 
-		String SQL="CALL `sp_onPostOfficeSendMessageEvent`('" + strDateNow + "', '" + sender + "', '" + recipient + "', '" + message + "')";
-		System.out.println("[postoffice] SQL: " + SQL);
+		String SQL = "CALL `sp_onPostOfficeSendMessageEvent`('" + strDateNow
+				+ "', '" + sender + "', '" + recipient + "', '" + message
+				+ "')";
+//		System.out.println("[postoffice] SQL: " + SQL);
 		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
 
-	
 	private void onRDBMScoreQueryResultEvent(RDBMScoreQueryResultEvent event) {
 		CachedRowSet crs = null;
 		if (event.isExceptionCaught()) {
 			// then we caught an exception
 			System.out
 					.println("[postoffice] Exception was caught by the rdbmscore plugin..");
-			System.out.println("[postoffice] SQLException: " + event.getExceptionLog());
+			System.out.println("[postoffice] SQLException: "
+					+ event.getExceptionLog());
 
 		} else {
 			if (event.getEffectedRowCount() > -1) {
 				// then this was either an update, insert, or delete
-//				System.out
-//						.println("Caught the results of an update, insert, or delete");
-//				System.out.println(event.getEffectedRowCount()
-//						+ " rows effected.");
+				// System.out
+				// .println("Caught the results of an update, insert, or delete");
+				// System.out.println(event.getEffectedRowCount()
+				// + " rows effected.");
 				switch (plugin.getCurrentState()) {
 				case WAIT_FOR_SEND_RECEIPT:
 					// send the data layer has successfully responded to our
 					// update
 					// and request to send the other player a package
 					// now we need to remove them from the player
-//					System.out
-//							.println("delivery confirmed, taking items from player");
+					// System.out
+					// .println("delivery confirmed, taking items from player");
 					this.TakePackageContents();
 					// TODO
 					break;
 
 				}
-//				System.out
-//						.println("Done handling the results, returning to NORMAL state..");
+				// System.out
+				// .println("Done handling the results, returning to NORMAL state..");
 				plugin.setCurrentState(applicationState.NORMAL);
 
 				// plugin.callingPlayer.sendMessage(event.getEffectedRowCount()
@@ -297,8 +307,8 @@ public class PostOfficeEventListener extends CustomEventListener {
 
 			} else {
 				// else this was a select statement
-//				System.out
-//						.println("Caught the results of a select statement..");
+				// System.out
+				// .println("Caught the results of a select statement..");
 				crs = (event).getCrs();
 				if (crs != null) {
 					// When execution reaches this point then we have received
@@ -308,9 +318,9 @@ public class PostOfficeEventListener extends CustomEventListener {
 
 					switch (plugin.getCurrentState()) {
 					case RESPONSE_READ:
-						//System.out.println("State: RESPONSE_READ");
+						// System.out.println("State: RESPONSE_READ");
 						try {
-							//System.out.println("Processing mail..");
+							// System.out.println("Processing mail..");
 							while (crs.next()) {
 								// Check status
 								// are we displaying messages or giving items?
@@ -322,27 +332,29 @@ public class PostOfficeEventListener extends CustomEventListener {
 								String sender = crs.getString("sender");
 								String message = crs.getString("message");
 								Integer messageIndex = crs.getInt("index");
-								
+
 								// unsanitize string
-								message = message.replace("\\\0" , "\0");
-								message = message.replace("\\\'" , "\'");
-								message = message.replace("\\\"" , "\"");
-								//message = message.replace("\\\b" , "\b");
-								message = message.replace("\\\n" , "\n");
-								message = message.replace("\\\t" , "\t");
-								message = message.replace("\\\\" , "\\");
-								
+								message = message.replace("\\\0", "\0");
+								message = message.replace("\\\'", "\'");
+								message = message.replace("\\\"", "\"");
+								// message = message.replace("\\\b" , "\b");
+								message = message.replace("\\\n", "\n");
+								message = message.replace("\\\t", "\t");
+								message = message.replace("\\\\", "\\");
+
 								plugin.callingPlayer.sendMessage("From: "
 										+ sender);
 								plugin.callingPlayer.sendMessage("Recieved: "
 										+ datetime);
 								plugin.callingPlayer.sendMessage(message);
 
-								// now that the mail has been displayed we need to
+								// now that the mail has been displayed we need
+								// to
 								// mark our mail read
 								// read in the database
-								plugin.assertMarkMessageReadEvent(plugin.callingPlayer
-										.getName(), messageIndex);
+								plugin.assertMarkMessageReadEvent(
+										plugin.callingPlayer.getName(),
+										messageIndex);
 							}
 						} catch (SQLException e) {
 							// TODO Auto-generated catch block
@@ -350,7 +362,7 @@ public class PostOfficeEventListener extends CustomEventListener {
 						}
 						break;
 					case RESPONSE_PACKAGE_RECEIVE:
-						//System.out.println("State: RESPONSE_PACKAGE_RECEIVE");
+						// System.out.println("State: RESPONSE_PACKAGE_RECEIVE");
 						// then we are receiving a package ..
 						try {
 							while (crs.next()) {
@@ -396,46 +408,49 @@ public class PostOfficeEventListener extends CustomEventListener {
 						}
 						break;
 					case SHOW_INBOX:
-							// then we want to display the results of the inbox
-						plugin.callingPlayer.sendMessage("-- Inbox ---------------------------------------------");
+						// then we want to display the results of the inbox
+						plugin.callingPlayer
+								.sendMessage("-- Inbox ---------------------------------------------");
 						try {
 							while (crs.next()) {
 								String type = crs.getString("type");
 								String messageId = crs.getString("index");
-								String datetime = crs.getString("datetime");
+								//String datetime = crs.getString("datetime");
 								String state = crs.getString("state");
 								String sender = crs.getString("sender");
 								String message = crs.getString("message");
-								
-								// unsanitize string
-								message = message.replace("\\\0" , "\0");
-								message = message.replace("\\\'" , "\'");
-								message = message.replace("\\\"" , "\"");
-								message = message.replace("\\\n" , "\n");
-								message = message.replace("\\\t" , "\t");
-								message = message.replace("\\\\" , "\\");
 
-								String chatString = "[ " + type + " : " + messageId + " ][ " + state + " : " + sender + " ]" +
-													"[ " + message + " ]";
-								if (chatString.length()>60) {
-									chatString = chatString.substring(0, 60);	
+								// unsanitize string
+								message = message.replace("\\\0", "\0");
+								message = message.replace("\\\'", "\'");
+								message = message.replace("\\\"", "\"");
+								message = message.replace("\\\n", "\n");
+								message = message.replace("\\\t", "\t");
+								message = message.replace("\\\\", "\\");
+
+								String chatString = "[ " + type + " : "
+										+ messageId + " ][ " + state + " : "
+										+ sender + " ]" + "[ " + message + " ]";
+								if (chatString.length() > 60) {
+									chatString = chatString.substring(0, 60);
 								}
-								
+
 								plugin.callingPlayer.sendMessage(chatString);
 							}
 						} catch (SQLException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						plugin.callingPlayer.sendMessage("-----------------------------------------------------");
-					break;
+						plugin.callingPlayer
+								.sendMessage("-----------------------------------------------------");
+						break;
 					}
 				} else {
-//					System.out
-//							.println("Recieved a NULL set from the rdbmscore!");
+					// System.out
+					// .println("Recieved a NULL set from the rdbmscore!");
 				}
-//				System.out
-//						.println("Done handling the results, returning to NORMAL state..");
+				// System.out
+				// .println("Done handling the results, returning to NORMAL state..");
 				plugin.setCurrentState(applicationState.NORMAL);
 			}
 		}
