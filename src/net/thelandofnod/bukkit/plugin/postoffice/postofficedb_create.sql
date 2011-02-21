@@ -34,23 +34,7 @@ CREATE TABLE  `postofficedb`.`po_mail` (
   `recipient` varchar(50) NOT NULL COMMENT 'the player or mechanism that is to receive the message',
   `message` text NOT NULL COMMENT 'the payload of the message',
   PRIMARY KEY (`index`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 COMMENT='net.thelandofnod.bukkit.plugin.postoffice';
-
---
--- Dumping data for table `postofficedb`.`po_mail`
---
-
-/*!40000 ALTER TABLE `po_mail` DISABLE KEYS */;
-LOCK TABLES `po_mail` WRITE;
-INSERT INTO `postofficedb`.`po_mail` VALUES  (1,'02-20-2011 05:47:59 PM','READ','offstar','offstar','hello offstar!'),
- (2,'02-20-2011 05:48:11 PM','READ','offstar','offstar','this is a test message...'),
- (3,'02-20-2011 08:52:03 PM','READ','offstar','offstar','sfdwjerhoi2i34i5ojrkjskdjfwejtrlksjflksjdtkj4lktrjwer'),
- (4,'02-20-2011 10:17:18 PM','READ','offstar','offstar','test'),
- (5,'02-20-2011 10:31:28 PM','UNREAD','offstar','forestdweller','hello! How are you?'),
- (6,'02-21-2011 02:47:54 PM','READ','offstar','offstar','this is another test message.');
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `po_mail` ENABLE KEYS */;
-
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COMMENT='net.thelandofnod.bukkit.plugin.postoffice';
 
 --
 -- Definition of table `postofficedb`.`po_package`
@@ -66,20 +50,7 @@ CREATE TABLE  `postofficedb`.`po_package` (
   `materialId` int(11) NOT NULL,
   `amount` int(11) NOT NULL,
   PRIMARY KEY (`index`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `postofficedb`.`po_package`
---
-
-/*!40000 ALTER TABLE `po_package` DISABLE KEYS */;
-LOCK TABLES `po_package` WRITE;
-INSERT INTO `postofficedb`.`po_package` VALUES  (1,'02-20-2011 07:21:25 PM','READ','offstar','offstar',46,64),
- (2,'02-20-2011 07:22:45 PM','READ','offstar','offstar',46,64),
- (3,'02-21-2011 11:07:01 AM','READ','offstar','offstar',46,64);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `po_package` ENABLE KEYS */;
-
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 --
 -- Definition of table `postofficedb`.`po_userregistry`
@@ -90,18 +61,6 @@ CREATE TABLE  `postofficedb`.`po_userregistry` (
   `username` varchar(50) NOT NULL,
   PRIMARY KEY (`username`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `postofficedb`.`po_userregistry`
---
-
-/*!40000 ALTER TABLE `po_userregistry` DISABLE KEYS */;
-LOCK TABLES `po_userregistry` WRITE;
-INSERT INTO `postofficedb`.`po_userregistry` VALUES  ('forestdweller'),
- ('offstar');
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `po_userregistry` ENABLE KEYS */;
-
 
 --
 -- Definition of function `postofficedb`.`IsRegistered`
