@@ -2,17 +2,16 @@ package net.thelandofnod.bukkit.plugin.postoffice;
 
 import org.bukkit.event.Cancellable;
 
-public class PostOfficeReadMessageEvent extends org.bukkit.event.Event
-		implements Cancellable {
-
+public class PostOfficeMarkMessageReadEvent extends org.bukkit.event.Event
+implements Cancellable {
 	private boolean cancel = false;
 	private String recipient;
-	private Integer messageIndex;
-
-	public PostOfficeReadMessageEvent(String recipient, Integer messageId) {
-		super("PostOfficeReadMessageEvent");
+	private Integer messageIndex; 
+	
+	public PostOfficeMarkMessageReadEvent(String recipient, Integer messageIndex) {
+		super("PostOfficeMarkMessageReadEvent");
 		this.recipient = recipient;
-		this.messageIndex = messageId;
+		this.messageIndex = messageIndex;
 	}
 
 	@Override
@@ -33,5 +32,4 @@ public class PostOfficeReadMessageEvent extends org.bukkit.event.Event
 	public Integer getMessageIndex() {
 		return messageIndex;
 	}
-
 }

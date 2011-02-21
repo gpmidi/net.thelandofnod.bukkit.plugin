@@ -30,11 +30,28 @@ public class PostOfficePlayerListener extends PlayerListener {
 			// then it's a command we want to listen to
 			event.setCancelled(true);
 
-			event.getPlayer().sendMessage("Usage: /postoffice read");
-			event.getPlayer().sendMessage("Usage: /postoffice send player message");
-			event.getPlayer().sendMessage("Usage: /postoffice package send player amount materialId");
-			event.getPlayer().sendMessage("Usage: /postoffice package get");
-			event.getPlayer().sendMessage("Usage: /postoffice package recall");
+//			event.getPlayer().sendMessage("Usage: /postoffice read messageId");
+//			event.getPlayer().sendMessage("Usage: /postoffice send player message");
+//			event.getPlayer().sendMessage("Usage: /postoffice package send player amount materialId");
+//			event.getPlayer().sendMessage("Usage: /postoffice package get");
+//			event.getPlayer().sendMessage("Usage: /postoffice package recall");
+/*
+ * {blank}
+ * inbox
+ * read {messageId}
+ * send {player} {message}
+ * package send {player} {amount} {materialId}
+ * package get {packageId}
+ * package recall
+ * help
+ * 
+ * */
+			// default action is to display the player inbox
+			// store calling player for later reference ..
+			plugin.callingPlayer = event.getPlayer();
+			plugin.assertPostOfficeViewInboxEvent(event.getPlayer().getName());
+			
+			
 		} else {
 			String[] split = event.getMessage().split(" ");
 try{
@@ -65,7 +82,7 @@ try{
 					}
 
 				} else if (split[1].equalsIgnoreCase("read")) {
-					plugin.assertReadMessageEvent(event.getPlayer().getName());
+					plugin.assertReadMessageEvent(event.getPlayer().getName(), Integer.valueOf(split[2]));
 				} else if (split[1].equalsIgnoreCase("package")) {
 					if (split[2].equalsIgnoreCase("send")) {
 						// then send a message

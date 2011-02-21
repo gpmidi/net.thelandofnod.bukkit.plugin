@@ -33,7 +33,7 @@ public class PostOffice extends JavaPlugin {
 	public int amount;
 
 	public enum applicationState {
-		RESPONSE_READ, RESPONSE_PACKAGE_RECEIVE, NORMAL, WAIT_FOR_SEND_RECEIPT
+		RESPONSE_READ, RESPONSE_PACKAGE_RECEIVE, NORMAL, WAIT_FOR_SEND_RECEIPT, SHOW_INBOX
 	}
 
 	private applicationState currentState;
@@ -174,9 +174,9 @@ public class PostOffice extends JavaPlugin {
 		getServer().getPluginManager().callEvent(posme);
 	}
 
-	public void assertReadMessageEvent(String recipient) {
+	public void assertReadMessageEvent(String recipient, Integer messageId) {
 		PostOfficeReadMessageEvent porme = new PostOfficeReadMessageEvent(
-				recipient);
+				recipient, messageId);
 		getServer().getPluginManager().callEvent(porme);
 	}
 
@@ -219,6 +219,17 @@ public class PostOffice extends JavaPlugin {
 		RDBMScoreQueryEvent rcqe = new RDBMScoreQueryEvent(
 				this.pdfFile.getName(), queryString);
 		getServer().getPluginManager().callEvent(rcqe);
+	}
+
+	public void assertPostOfficeViewInboxEvent(String name) {
+		PostOfficeViewInboxEvent povie = new PostOfficeViewInboxEvent(name);
+		getServer().getPluginManager().callEvent(povie);
+	}
+
+	public void assertMarkMessageReadEvent(String name, Integer messageIndex) {
+		PostOfficeMarkMessageReadEvent pommre = new PostOfficeMarkMessageReadEvent(name, messageIndex);
+		getServer().getPluginManager().callEvent(pommre);
+		
 	}
 
 }
