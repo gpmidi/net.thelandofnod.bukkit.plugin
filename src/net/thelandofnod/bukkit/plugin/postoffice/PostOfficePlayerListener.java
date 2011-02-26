@@ -36,9 +36,17 @@ public class PostOfficePlayerListener extends PlayerListener {
 			// event.getPlayer().sendMessage("Usage: /postoffice package get");
 			// event.getPlayer().sendMessage("Usage: /postoffice package recall");
 			/*
-			 * {blank} inbox read {messageId} send {player} {message} delete
-			 * message delete package package send {player} {amount}
-			 * {materialId} package get {packageId} package recall help
+			 * {blank}
+			 * inbox 
+			 * read {messageId} 
+			 * send {player} {message} 
+			 * delete message {messageId}
+			 * delete package {messageId}
+			 * package send {player} {amount} {materialId} 
+			 * package get {packageId} 
+			 * package delete {packageId}
+			 * package recall 
+			 * help
 			 */
 			// default action is to display the player inbox
 			// store calling player for later reference ..
@@ -78,6 +86,19 @@ public class PostOfficePlayerListener extends PlayerListener {
 					} else if (split[1].equalsIgnoreCase("read")) {
 						plugin.assertReadMessageEvent(event.getPlayer()
 								.getName(), Integer.valueOf(split[2]));
+					} else if (split[1].equalsIgnoreCase("delete")) {
+							Integer messageId = Integer.valueOf(split[3]);
+							if (split[2].equalsIgnoreCase("message")){
+								plugin.assertDeleteMessageEvent(event.getPlayer()
+										.getName(), messageId);
+							} else if (split[2].equalsIgnoreCase("package")) {
+								plugin.assertDeletePackageEvent(event.getPlayer()
+										.getName(), messageId);
+							} else {
+								event.getPlayer()
+								.sendMessage(
+										"Usage: /postoffice delete {messageId}");
+							}
 					} else if (split[1].equalsIgnoreCase("package")) {
 						if (split[2].equalsIgnoreCase("send")) {
 							// then send a message
@@ -95,7 +116,8 @@ public class PostOfficePlayerListener extends PlayerListener {
 						} else if (split[2].equalsIgnoreCase("recall")) {
 							plugin.assertRecallPackageEvent(event.getPlayer()
 									.getName());
-						} else {
+						} 
+						else {
 							// else present the stand usage message
 							// event.getPlayer().sendMessage("Incorrect usage syntax.");
 							event.getPlayer()
@@ -106,7 +128,8 @@ public class PostOfficePlayerListener extends PlayerListener {
 							event.getPlayer().sendMessage(
 									"Usage: /postoffice package recall");
 						}
-					} else {
+					}
+					else {
 						// else present the stand usage message
 						// event.getPlayer().sendMessage("Incorrect usage syntax.");
 						event.getPlayer()

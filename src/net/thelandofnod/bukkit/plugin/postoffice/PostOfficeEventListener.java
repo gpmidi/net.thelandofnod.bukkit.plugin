@@ -64,7 +64,31 @@ public class PostOfficeEventListener extends CustomEventListener {
 		} else if (customEvent instanceof PostOfficeMarkMessageReadEvent) {
 			onPostOfficeMarkMessageReadEvent((PostOfficeMarkMessageReadEvent) customEvent);
 			((PostOfficeMarkMessageReadEvent) customEvent).setCancelled(true);
+		} else if (customEvent instanceof PostOfficeDeleteMessageEvent) {
+			onPostOfficeDeleteMessageEvent((PostOfficeDeleteMessageEvent) customEvent);
+			((PostOfficeDeleteMessageEvent) customEvent).setCancelled(true);
+		} else if (customEvent instanceof PostOfficeDeletePackageEvent) {
+			onPostOfficeDeletePackageEvent((PostOfficeDeletePackageEvent) customEvent);
+			((PostOfficeDeletePackageEvent) customEvent).setCancelled(true);			
 		}
+	}
+
+	private void onPostOfficeDeletePackageEvent(
+			PostOfficeDeletePackageEvent customEvent) {
+		String playerName = customEvent.getPlayerName();
+		Integer messageIndex = customEvent.getMessageIndex();
+		String SQL = "CALL `sp_onPostOfficeDeletePackageEvent`('" + playerName
+			+ "', " + messageIndex.toString() + ");";
+		plugin.assertRDBMScoreQueryEvent(SQL);
+	}
+
+	private void onPostOfficeDeleteMessageEvent(
+			PostOfficeDeleteMessageEvent customEvent) {
+		String playerName = customEvent.getPlayerName();
+		Integer messageIndex = customEvent.getMessageIndex();
+		String SQL = "CALL `sp_onPostOfficeDeleteMessageEvent`('" + playerName
+			+ "', " + messageIndex.toString() + ");";
+		plugin.assertRDBMScoreQueryEvent(SQL);
 	}
 
 	private void onPostOfficeMarkMessageReadEvent(
@@ -410,7 +434,7 @@ public class PostOfficeEventListener extends CustomEventListener {
 					case SHOW_INBOX:
 						// then we want to display the results of the inbox
 						plugin.callingPlayer
-								.sendMessage("-- Inbox ---------------------------------------------");
+								.sendMessage("-- Inbox --------------------------------------------");
 						try {
 							while (crs.next()) {
 								String type = crs.getString("type");
@@ -442,7 +466,7 @@ public class PostOfficeEventListener extends CustomEventListener {
 							e.printStackTrace();
 						}
 						plugin.callingPlayer
-								.sendMessage("-----------------------------------------------------");
+								.sendMessage("----------------------------------------------------");
 						break;
 					}
 				} else {

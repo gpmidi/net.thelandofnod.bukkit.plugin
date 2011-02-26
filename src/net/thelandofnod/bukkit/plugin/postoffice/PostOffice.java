@@ -54,20 +54,22 @@ public class PostOffice extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		if (this.isEnabled) {
-			this.assertDBDisonnectEvent(
-					dbProperties.getProperty("db.username"),
-					dbProperties.getProperty("db.password"),
-					dbProperties.getProperty("db.rdbms"),
-					dbProperties.getProperty("db.servername"),
-					dbProperties.getProperty("db.portnumber"),
-					dbProperties.getProperty("db.database"),
-					dbProperties.getProperty("db.driver"));
-		}
-		this.isEnabled = false;
-
-		System.out.println(pdfFile.getName() + " version "
-				+ pdfFile.getVersion() + " is disabled!");
+		// TODO broken as of build 423...
+		
+//		if (this.isEnabled = true) {
+//			this.assertDBDisonnectEvent(
+//					dbProperties.getProperty("db.username"),
+//					dbProperties.getProperty("db.password"),
+//					dbProperties.getProperty("db.rdbms"),
+//					dbProperties.getProperty("db.servername"),
+//					dbProperties.getProperty("db.portnumber"),
+//					dbProperties.getProperty("db.database"),
+//					dbProperties.getProperty("db.driver"));
+//			this.isEnabled = false;
+//		}
+//		
+//		System.out.println(pdfFile.getName() + " version "
+//				+ pdfFile.getVersion() + " is disabled!");
 	}
 
 	@Override
@@ -234,6 +236,18 @@ public class PostOffice extends JavaPlugin {
 				name, messageIndex);
 		getServer().getPluginManager().callEvent(pommre);
 
+	}
+
+	public void assertDeleteMessageEvent(String name, int messageId) {
+		PostOfficeDeleteMessageEvent podme = new PostOfficeDeleteMessageEvent(
+				name, messageId);
+		getServer().getPluginManager().callEvent(podme);
+	}
+
+	public void assertDeletePackageEvent(String name, int messageId) {
+		PostOfficeDeletePackageEvent podpe = new PostOfficeDeletePackageEvent(
+				name, messageId);
+		getServer().getPluginManager().callEvent(podpe);
 	}
 
 }
