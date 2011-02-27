@@ -54,6 +54,7 @@ CREATE TABLE `po_package` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+
 --
 -- Table structure for table `po_userregistry`
 --
@@ -66,6 +67,7 @@ CREATE TABLE `po_userregistry` (
   PRIMARY KEY (`username`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
 
 --
 -- Dumping routines for database 'postofficedb'
@@ -181,7 +183,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_onPostOfficeMarkPackagesReadEvent` */;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_onPostOfficeMarkPackageWithIdReadEvent` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -191,11 +193,11 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `sp_onPostOfficeMarkPackagesReadEvent`(IN recipientName TEXT)
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `sp_onPostOfficeMarkPackageWithIdReadEvent`(IN recipientName TEXT, IN packageId INT)
 BEGIN
     START TRANSACTION;
       IF IsRegistered(recipientName)>0 THEN
-        UPDATE po_package SET state='READ' WHERE recipient=recipientName AND state='UNREAD';
+        UPDATE po_package SET state='READ' WHERE recipient=recipientName AND state='UNREAD' AND `index`=packageId;
       END IF;
     COMMIT;
 END */;;
@@ -284,6 +286,27 @@ BEGIN
   IF IsRegistered(recipientName)>0 THEN
     SELECT * FROM po_package WHERE state='UNREAD' AND recipient=recipientName;
   END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_onPostOfficeReceivePackageWithIdEvent` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `sp_onPostOfficeReceivePackageWithIdEvent`(IN playerName TEXT, IN packageId INT)
+BEGIN
+	IF IsRegistered(playerName)>0 THEN
+		SELECT * FROM po_package WHERE recipient=playerName AND state='UNREAD' AND `index`=packageId;
+	END IF;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -394,4 +417,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-02-26 12:01:51
+-- Dump completed on 2011-02-26 21:13:46
