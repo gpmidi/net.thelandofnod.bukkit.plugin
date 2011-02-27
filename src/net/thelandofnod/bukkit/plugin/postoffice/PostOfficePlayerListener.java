@@ -93,13 +93,13 @@ public class PostOfficePlayerListener extends PlayerListener {
                     // else present the stand usage message
                     event.getPlayer().sendMessage("Usage: /postoffice or /po");
                     event.getPlayer().sendMessage("read message {messageId}");
-                    event.getPlayer().sendMessage("read package");
+                    event.getPlayer().sendMessage("read package {packageId}");
                     event.getPlayer().sendMessage("send message {player} {message}");
                     event.getPlayer().sendMessage("send package {player} {amount} {materialId}");
                     event.getPlayer().sendMessage("delete message {messageId}");
                     event.getPlayer().sendMessage("delete package {packageId}");
                     event.getPlayer().sendMessage("package send {player} {amount} {materialId}");
-                    event.getPlayer().sendMessage("package get");
+                    event.getPlayer().sendMessage("package get {packageId}");
                     event.getPlayer().sendMessage("package delete {packageId}");
                     event.getPlayer().sendMessage("package recall");
                 }
