@@ -1,0 +1,5 @@
+net.thelandofnod.bukkit.plugin.rdbmscore
+  A MySQL Craftbukkit plugin driver that uses bukkit's native event model as the client-plugin interface.
+
+net.thelandofnod.bukkit.plugin.postoffice
+  A MySQL backed mail and package (item stack) delivery system for Craftbukkit.
