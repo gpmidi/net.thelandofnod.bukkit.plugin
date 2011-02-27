@@ -36,6 +36,15 @@ CREATE TABLE `po_mail` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `po_mail`
+--
+
+LOCK TABLES `po_mail` WRITE;
+/*!40000 ALTER TABLE `po_mail` DISABLE KEYS */;
+/*!40000 ALTER TABLE `po_mail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `po_package`
 --
 
@@ -54,6 +63,14 @@ CREATE TABLE `po_package` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `po_package`
+--
+
+LOCK TABLES `po_package` WRITE;
+/*!40000 ALTER TABLE `po_package` DISABLE KEYS */;
+/*!40000 ALTER TABLE `po_package` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `po_userregistry`
@@ -68,6 +85,14 @@ CREATE TABLE `po_userregistry` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `po_userregistry`
+--
+
+LOCK TABLES `po_userregistry` WRITE;
+/*!40000 ALTER TABLE `po_userregistry` DISABLE KEYS */;
+/*!40000 ALTER TABLE `po_userregistry` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Dumping routines for database 'postofficedb'
@@ -376,7 +401,7 @@ BEGIN
     IF IsRegistered(playerName)>0 THEN
       (SELECT 'MAIL' AS 'type', `index`, datetime, `state`, sender, message FROM po_mail WHERE recipient=playerName AND `state` != 'DELETED')
       UNION
-      (SELECT 'PACKAGE' AS 'type', `index`, datetime, `state`, sender, CONCAT(CONCAT(CAST(materialId AS CHAR)," of "),CAST(amount AS CHAR)) AS 'message' FROM po_package WHERE recipient=playerName AND `state` != 'DELETED') ORDER BY type, `index`, datetime, `state`;
+      (SELECT 'PACKAGE' AS 'type', `index`, datetime, `state`, sender, CONCAT(CONCAT(CAST(amount AS CHAR)," of "),CAST(materialId AS CHAR)) AS 'message' FROM po_package WHERE recipient=playerName AND `state` != 'DELETED') ORDER BY type, `index`, datetime, `state`;
     END IF;
 END */;;
 DELIMITER ;
@@ -417,4 +442,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-02-26 21:13:46
+-- Dump completed on 2011-02-27 10:25:17
