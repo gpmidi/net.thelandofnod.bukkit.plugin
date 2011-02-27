@@ -3,28 +3,28 @@ package net.thelandofnod.bukkit.plugin.postoffice;
 import org.bukkit.event.Cancellable;
 
 public class PostOfficeViewInboxEvent extends org.bukkit.event.Event implements
-		Cancellable {
+        Cancellable {
 
-	private boolean cancel = false;
-	private String playerName;
+    private boolean cancel = false;
+    private String playerName;
 
-	protected PostOfficeViewInboxEvent(String name) {
-		super("PostOfficeViewInboxEvent");
-		this.playerName = name;
-	}
+    protected PostOfficeViewInboxEvent(String name) {
+        super("PostOfficeViewInboxEvent");
+        this.playerName = name;
+    }
 
-	@Override
-	public boolean isCancelled() {
-		return cancel;
-	}
+    //    @Override
+    public boolean isCancelled() {
+        return cancel;
+    }
 
-	@Override
-	public void setCancelled(boolean cancel) {
-		this.cancel = cancel;
-	}
+    //    @Override
+    public void setCancelled(boolean cancel) {
+        this.cancel = cancel;
+    }
 
-	public String getPlayerName() {
-		return playerName;
-	}
+    public String getPlayerName() {
+        return playerName;
+    }
 
 }

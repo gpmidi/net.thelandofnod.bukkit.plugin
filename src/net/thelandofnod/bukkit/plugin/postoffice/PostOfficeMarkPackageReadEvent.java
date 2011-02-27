@@ -2,20 +2,21 @@ package net.thelandofnod.bukkit.plugin.postoffice;
 
 import org.bukkit.event.Cancellable;
 
-public class PostOfficeMarkMessagesReadEvent extends org.bukkit.event.Event
+public class PostOfficeMarkPackageReadEvent extends org.bukkit.event.Event
         implements Cancellable {
 
     private boolean cancel = false;
     private String recipient;
+    private Integer packageId;
 
-    public PostOfficeMarkMessagesReadEvent(String recipient) {
-        super("PostOfficeMarkMessagesReadEvent");
+    public PostOfficeMarkPackageReadEvent(String recipient, Integer packageId) {
+        super("PostOfficeMarkPackageReadEvent");
         this.recipient = recipient;
+        this.packageId = packageId;
     }
 
     //    @Override
     public boolean isCancelled() {
-        // TODO Auto-generated method stub
         return cancel;
     }
 
@@ -26,5 +27,9 @@ public class PostOfficeMarkMessagesReadEvent extends org.bukkit.event.Event
 
     public String getRecipient() {
         return recipient;
+    }
+
+    public Integer getPackageId() {
+        return this.packageId;
     }
 }
