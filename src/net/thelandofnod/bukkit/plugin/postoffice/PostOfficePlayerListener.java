@@ -89,22 +89,23 @@ public class PostOfficePlayerListener extends PlayerListener {
                         plugin.assertRecallPackageEvent(event.getPlayer().getName());
                     }
                 } else {
-                    plugin.assertPostOfficeViewInboxEvent(event.getPlayer().getName());
+//                    plugin.assertPostOfficeViewInboxEvent(event.getPlayer().getName());
+                    // else present the stand usage message
+                    event.getPlayer().sendMessage("Usage: /postoffice or /po");
+                    event.getPlayer().sendMessage("read message {messageId}");
+                    event.getPlayer().sendMessage("read package");
+                    event.getPlayer().sendMessage("send message {player} {message}");
+                    event.getPlayer().sendMessage("send package {player} {amount} {materialId}");
+                    event.getPlayer().sendMessage("delete message {messageId}");
+                    event.getPlayer().sendMessage("delete package {packageId}");
+                    event.getPlayer().sendMessage("package send {player} {amount} {materialId}");
+                    event.getPlayer().sendMessage("package get");
+                    event.getPlayer().sendMessage("package delete {packageId}");
+                    event.getPlayer().sendMessage("package recall");
                 }
             }
         } catch (Exception ArrayIndexOutOfBoundsException) {
-            // else present the stand usage message
-            event.getPlayer().sendMessage("Usage: /postoffice or /po");
-            event.getPlayer().sendMessage("read message {messageId}");
-            event.getPlayer().sendMessage("read package");
-            event.getPlayer().sendMessage("send message {player} {message}");
-            event.getPlayer().sendMessage("send package {player} {amount} {materialId}");
-            event.getPlayer().sendMessage("delete message {messageId}");
-            event.getPlayer().sendMessage("delete package {packageId}");
-            event.getPlayer().sendMessage("package send {player} {amount} {materialId}");
-            event.getPlayer().sendMessage("package get");
-            event.getPlayer().sendMessage("package delete {packageId}");
-            event.getPlayer().sendMessage("package recall");
+            plugin.assertPostOfficeViewInboxEvent(event.getPlayer().getName());
         }
     }
 }
